@@ -1,0 +1,28 @@
+{
+	"configurations": [
+		{
+			"name": "FebGameJamEditor Editor Linux Development (FebGameJam)",
+			"compilerPath": "/media/eric/storage_linux_2/dev/Linux_Unreal_Engine_5.3.2/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"compilerArgs": [
+				"-isysroot",
+				"/media/eric/storage_linux_2/dev/Linux_Unreal_Engine_5.3.2/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu"
+			],
+			"cStandard": "c17",
+			"cppStandard": "c++20",
+			"intelliSenseMode": "clang-x64",
+			"compileCommands": "/media/eric/storage_linux_2/projects/FebGameJam/.vscode/compileCommands_FebGameJam.json"
+		},
+		{
+			"name": "Linux",
+			"compilerPath": "/media/eric/storage_linux_2/dev/Linux_Unreal_Engine_5.3.2/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu/bin/clang++",
+			"compilerArgs": [
+				"-isysroot",
+				"/media/eric/storage_linux_2/dev/Linux_Unreal_Engine_5.3.2/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu"
+			],
+			"cStandard": "c17",
+			"cppStandard": "c++20",
+			"intelliSenseMode": "clang-x64",
+			"compileCommands": "/media/eric/storage_linux_2/projects/FebGameJam/.vscode/compileCommands_Default.json"
+		}
+	]
+}
