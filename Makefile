@@ -2,7 +2,7 @@
 # *DO NOT EDIT*
 
 UNREALROOTPATH = /media/eric/storage_linux_2/dev/Linux_Unreal_Engine_5.3.2
-GAMEPROJECTFILE =/media/eric/storage_linux_2/projects/FebGameJam/FebGameJam.uproject
+GAMEPROJECTFILE =/media/eric/storage_linux_2/projects/MonoGrinding/MonoGrinding.uproject
 
 TARGETS = \
 	UnrealEditor-Linux-DebugGame  \
@@ -11,12 +11,12 @@ TARGETS = \
 	UnrealGame-Linux-DebugGame  \
 	UnrealGame-Linux-Shipping  \
 	UnrealGame \
-	FebGameJam-Linux-DebugGame  \
-	FebGameJam-Linux-Shipping  \
-	FebGameJam \
-	FebGameJamEditor-Linux-DebugGame  \
-	FebGameJamEditor-Linux-Shipping  \
-	FebGameJamEditor\
+	MonoGrinding-Linux-DebugGame  \
+	MonoGrinding-Linux-Shipping  \
+	MonoGrinding \
+	MonoGrindingEditor-Linux-DebugGame  \
+	MonoGrindingEditor-Linux-Shipping  \
+	MonoGrindingEditor\
 	configure
 
 BUILD = bash "$(UNREALROOTPATH)/Engine/Build/BatchFiles/Linux/Build.sh"
@@ -26,9 +26,9 @@ all: StandardSet
 
 RequiredTools: CrashReportClient-Linux-Shipping CrashReportClientEditor-Linux-Shipping ShaderCompileWorker UnrealLightmass EpicWebHelper-Linux-Shipping
 
-StandardSet: RequiredTools UnrealFrontend FebGameJamEditor UnrealInsights
+StandardSet: RequiredTools UnrealFrontend MonoGrindingEditor UnrealInsights
 
-DebugSet: RequiredTools UnrealFrontend-Linux-Debug FebGameJamEditor-Linux-Debug
+DebugSet: RequiredTools UnrealFrontend-Linux-Debug MonoGrindingEditor-Linux-Debug
 
 
 UnrealEditor-Linux-DebugGame:
@@ -49,23 +49,23 @@ UnrealGame-Linux-Shipping:
 UnrealGame:
 	 $(BUILD) UnrealGame Linux Development  $(ARGS)
 
-FebGameJam-Linux-DebugGame:
-	 $(PROJECTBUILD) FebGameJam Linux DebugGame  -project="$(GAMEPROJECTFILE)" $(ARGS)
+MonoGrinding-Linux-DebugGame:
+	 $(PROJECTBUILD) MonoGrinding Linux DebugGame  -project="$(GAMEPROJECTFILE)" $(ARGS)
 
-FebGameJam-Linux-Shipping:
-	 $(PROJECTBUILD) FebGameJam Linux Shipping  -project="$(GAMEPROJECTFILE)" $(ARGS)
+MonoGrinding-Linux-Shipping:
+	 $(PROJECTBUILD) MonoGrinding Linux Shipping  -project="$(GAMEPROJECTFILE)" $(ARGS)
 
-FebGameJam:
-	 $(PROJECTBUILD) FebGameJam Linux Development  -project="$(GAMEPROJECTFILE)" $(ARGS)
+MonoGrinding:
+	 $(PROJECTBUILD) MonoGrinding Linux Development  -project="$(GAMEPROJECTFILE)" $(ARGS)
 
-FebGameJamEditor-Linux-DebugGame:
-	 $(PROJECTBUILD) FebGameJamEditor Linux DebugGame  -project="$(GAMEPROJECTFILE)" $(ARGS)
+MonoGrindingEditor-Linux-DebugGame:
+	 $(PROJECTBUILD) MonoGrindingEditor Linux DebugGame  -project="$(GAMEPROJECTFILE)" $(ARGS)
 
-FebGameJamEditor-Linux-Shipping:
-	 $(PROJECTBUILD) FebGameJamEditor Linux Shipping  -project="$(GAMEPROJECTFILE)" $(ARGS)
+MonoGrindingEditor-Linux-Shipping:
+	 $(PROJECTBUILD) MonoGrindingEditor Linux Shipping  -project="$(GAMEPROJECTFILE)" $(ARGS)
 
-FebGameJamEditor:
-	 $(PROJECTBUILD) FebGameJamEditor Linux Development  -project="$(GAMEPROJECTFILE)" $(ARGS)
+MonoGrindingEditor:
+	 $(PROJECTBUILD) MonoGrindingEditor Linux Development  -project="$(GAMEPROJECTFILE)" $(ARGS)
 
 configure:
 	xbuild /property:Configuration=Development /verbosity:quiet /nologo "$(UNREALROOTPATH)/Engine/Source/Programs/UnrealBuildTool/UnrealBuildTool.csproj"
