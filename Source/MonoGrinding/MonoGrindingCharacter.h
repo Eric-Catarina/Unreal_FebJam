@@ -38,6 +38,10 @@ class AMonoGrindingCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	/** MoveAllies Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* MoveAlliesAction;
+
 public:
 	AMonoGrindingCharacter();
 	
@@ -49,6 +53,7 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+	void MoveAllies(const FInputActionValue& Value);
 
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

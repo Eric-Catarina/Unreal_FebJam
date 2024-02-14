@@ -68,7 +68,6 @@ void AMonoGrindingCharacter::BeginPlay()
 			PlayerController->bShowMouseCursor = true;
 			PlayerController->bEnableClickEvents = true;
 			PlayerController->bEnableMouseOverEvents = true;
-			
 		}
 	}
 }
@@ -81,6 +80,8 @@ void AMonoGrindingCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
+		EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this, &AMonoGrindingCharacter::MoveAllies);
+
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -104,6 +105,7 @@ void AMonoGrindingCharacter::Move(const FInputActionValue& Value)
 
 	if (Controller != nullptr)
 	{
+
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -131,4 +133,20 @@ void AMonoGrindingCharacter::Look(const FInputActionValue& Value)
 		// AddControllerYawInput(LookAxisVector.X);
 		// AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AMonoGrindingCharacter::MoveAllies(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Clicked Move Allies"));
+
+	// FHitResult HitResult;
+	// GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+	// FVector TargetLocation = HitResult.Location;
+	// if(HitResult.bBlockingHit)
+	// {
+	// 	// MoveAlliesToLocation(TargetLocation);
+	// 	UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *TargetLocation.ToString());
+	// 	
+	// }
+
 }
