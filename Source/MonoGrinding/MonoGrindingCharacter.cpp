@@ -135,18 +135,17 @@ void AMonoGrindingCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
-void AMonoGrindingCharacter::MoveAllies(const FInputActionValue& Value)
+void AMonoGrindingCharacter::MoveAllies()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Clicked Move Allies"));
 
-	// FHitResult HitResult;
-	// GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
-	// FVector TargetLocation = HitResult.Location;
-	// if(HitResult.bBlockingHit)
-	// {
-	// 	// MoveAlliesToLocation(TargetLocation);
-	// 	UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *TargetLocation.ToString());
-	// 	
-	// }
+	FHitResult HitResult;
+	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+	FVector TargetLocation = HitResult.Location;
+	if(HitResult.bBlockingHit)
+	{
+		
+		
+	}
 
 }
