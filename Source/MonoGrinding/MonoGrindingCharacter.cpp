@@ -65,6 +65,10 @@ void AMonoGrindingCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+			PlayerController->bShowMouseCursor = true;
+			PlayerController->bEnableClickEvents = true;
+			PlayerController->bEnableMouseOverEvents = true;
+			
 		}
 	}
 }
@@ -124,7 +128,7 @@ void AMonoGrindingCharacter::Look(const FInputActionValue& Value)
 	if (Controller != nullptr)
 	{
 		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+		// AddControllerYawInput(LookAxisVector.X);
+		// AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
