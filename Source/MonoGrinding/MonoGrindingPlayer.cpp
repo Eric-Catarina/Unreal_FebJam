@@ -5,6 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "MonoGrindingAlly.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -120,6 +121,7 @@ void AMonoGrindingPlayer::MoveAllies()
 	FVector TargetLocation = HitResult.Location;
 	if(HitResult.bBlockingHit)
 	{
+		CreateAllyAtPosition(TargetLocation);
 		// for(auto& Ally : Allies)
 		// {
 		// 	Ally->MoveToTargetLocation(TargetLocation);
@@ -127,3 +129,29 @@ void AMonoGrindingPlayer::MoveAllies()
 		
 	}
 }
+
+void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position)
+{
+	if (GetWorld() == nullptr)
+		return;
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+	
+	// Ajustar a posição baseada na posição atual do jogador
+	FVector SpawnLocation = Position;
+	
+	// Define a rotação do aliado, se necessário. Neste exemplo, sem rotação.
+	FRotator SpawnRotation = FRotator::ZeroRotator;
+	
+	// Criar a instância do aliado
+	AMonoGrindingAlly* NewAlly = GetWorld()->SpawnActor<AMonoGrindingAlly>(AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
+
+	// Adicione a lógica adicional aqui, como adicionar o aliado à lista de aliados
+	if (NewAlly != nullptr)
+	{
+		Allies.Add(NewAlly);
+	}
+}
+

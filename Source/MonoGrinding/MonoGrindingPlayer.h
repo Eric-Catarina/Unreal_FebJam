@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MonoGrindingAlly.h"
 #include "MonoGrindingCharacter.h"
 #include "MonoGrindingPlayer.generated.h"
 
@@ -20,8 +21,9 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 	void MoveAllies();
+	void CreateAllyAtPosition(FVector Position);
 
-	
+
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -58,7 +60,13 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally")
+	TArray<AMonoGrindingAlly*> Allies;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ally")
+	TSubclassOf<AMonoGrindingAlly> AllyBlueprint;
+	
 	AMonoGrindingPlayer();
 	
 	void BeginPlay();
