@@ -59,6 +59,8 @@ void AMonoGrindingPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		
 		EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this, &AMonoGrindingPlayer::MoveAllies);
 
+		EnhancedInputComponent->BindAction(SummonAllyAction, ETriggerEvent::Triggered, this, &AMonoGrindingPlayer::SumonAlly);
+
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -114,19 +116,30 @@ void AMonoGrindingPlayer::Look(const FInputActionValue& Value)
 
 void AMonoGrindingPlayer::MoveAllies()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Clicked Move Allies"));
+	
 
 	FHitResult HitResult;
 	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
 	FVector TargetLocation = HitResult.Location;
 	if(HitResult.bBlockingHit)
 	{
-		CreateAllyAtPosition(TargetLocation);
-		// for(auto& Ally : Allies)
-		// {
-		// 	Ally->MoveToTargetLocation(TargetLocation);
-		// }
+		for(auto& Ally : Allies)
+		{
+			Ally->MoveToTargetLocation(TargetLocation);
+		}
+	}
+}
+void AMonoGrindingPlayer::SumonAlly()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Clicked Summon Ally"));
+
+	FHitResult HitResult;
+	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+	FVector TargetLocation = HitResult.Location;
+	if(HitResult.bBlockingHit)
+	{
 		
+		CreateAllyAtPosition(TargetLocation);
 	}
 }
 
@@ -151,6 +164,7 @@ void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position)
 	// Adicione a lógica adicional aqui, como adicionar o aliado à lista de aliados
 	if (NewAlly != nullptr)
 	{
+		NewAlly->SpawnDefaultController();
 		Allies.Add(NewAlly);
 	}
 }

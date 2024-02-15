@@ -21,6 +21,7 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 	void MoveAllies();
+	void SumonAlly();
 	void CreateAllyAtPosition(FVector Position);
 
 
@@ -54,6 +55,9 @@ protected:
 	/** MoveAllies Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAlliesAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SummonAllyAction;
 	
 public:
 	/** Returns CameraBoom subobject **/

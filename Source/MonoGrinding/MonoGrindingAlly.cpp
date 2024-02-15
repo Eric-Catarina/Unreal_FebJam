@@ -17,6 +17,8 @@ void AMonoGrindingAlly::MoveToTargetLocation(const FVector& TargetLocation)
 	AAIController* AIController = Cast<AAIController>(GetController());
 	if (AIController)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Trying to move to location %s"), *TargetLocation.ToString());
+
 		AIController->MoveToLocation(TargetLocation);
 	}
 }

@@ -5,10 +5,15 @@
 
 #include "AIController.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 AMonoGrindingEnemy::AMonoGrindingEnemy()
 {
+	GetCharacterMovement()->MaxWalkSpeed = 250.f;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 10.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 1000.f;
+	GetCharacterMovement()->BrakingDecelerationFalling = 750.0f;
 	// Cria o componente. Parece o Instantiate da Unity
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	
