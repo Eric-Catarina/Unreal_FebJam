@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HealthComponent.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "MonoGrindingCharacter.generated.h"
@@ -22,7 +23,9 @@ class AMonoGrindingCharacter : public ACharacter
 
 public:
 	AMonoGrindingCharacter();
-	void BeginPlay();
+	virtual void BeginPlay() override;
 	
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
+	UHealthComponent* HealthComponent;
 };
 

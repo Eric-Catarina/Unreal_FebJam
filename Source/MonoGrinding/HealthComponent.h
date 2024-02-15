@@ -29,7 +29,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void Heal(float HealAmount);
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
 
