@@ -15,18 +15,7 @@ AMonoGrindingEnemy::AMonoGrindingEnemy()
 	// Esse componente tem um evento chamado OnSeePawn que é chamado quando o inimigo vê o jogador
 	// Adiciona um método para ser chamado quando o evento OnSeePawn é chamado
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AMonoGrindingEnemy::FollowPawn);
-	if(CameraBoom)
-	{
-		// CameraBoom->SetActive(false);
-		// CameraBoom->SetVisibility(false);
-		CameraBoom->DestroyComponent();
-	}
-    if(FollowCamera)
-    {
-	    // FollowCamera->SetActive(false);
-    	// FollowCamera->SetVisibility(false);
-    	FollowCamera->DestroyComponent();
-    }
+
 }
 
 void AMonoGrindingEnemy::FollowPawn(APawn* TargetPawn)
