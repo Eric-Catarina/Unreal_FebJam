@@ -23,5 +23,6 @@ class AMonoGrindingCharacter : public ACharacter
 public:
 	AMonoGrindingCharacter();
 	void BeginPlay();
+	
 };
 
