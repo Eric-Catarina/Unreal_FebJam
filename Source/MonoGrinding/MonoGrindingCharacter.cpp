@@ -8,6 +8,8 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Blueprint/UserWidget.h"
+#include "Misc/OutputDeviceNull.h"
 
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -40,20 +42,44 @@ AMonoGrindingCharacter::AMonoGrindingCharacter()
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
     AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
-    
+	
 }
 
 
 void AMonoGrindingCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-}
+	
+	HealthBarWidget = Cast<UWidgetComponent>(GetComponentByClass(UWidgetComponent::StaticClass()));
+	}
 
 float AMonoGrindingCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	float DamageApplied = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
     
 	HealthComponent->TakeDamage(DamageApplied); // Supondo que HealthComponent é seu componente de saúde
-    
+
+	if(!HealthBarWidget) return DamageApplied;
+	
+	float HealthPercent = GetHealthPercent();
+	FString Command = FString::Printf(TEXT("UpdateHealthBar %f"), HealthPercent);
+	FOutputDeviceNull Ar;
+	
+	HealthBarWidget->GetWidget()->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
+  
+	
+	
 	return DamageApplied;
 }
+
+float AMonoGrindingCharacter::GetHealthPercent() const
+{
+	UHealthComponent* HealthComp = FindComponentByClass<UHealthComponent>();
+	if (HealthComp)
+	{
+		return HealthComp->CurrentHealth / HealthComp->MaxHealth;
+	}
+
+	return 0.0f; // Se não encontrou, retorna 0
+}
+

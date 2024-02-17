@@ -46,3 +46,6 @@ void UHealthComponent::Heal(float HealAmount)
 {
 	CurrentHealth = FMath::Clamp(CurrentHealth + HealAmount, 0.f, MaxHealth);
 }
+
+
+

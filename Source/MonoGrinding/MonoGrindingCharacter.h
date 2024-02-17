@@ -7,6 +7,8 @@
 #include "AttackComponent.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 #include "MonoGrindingCharacter.generated.h"
 
 class USpringArmComponent;
@@ -28,6 +30,7 @@ public:
 
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
+	float GetHealthPercent() const;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
 	UHealthComponent* HealthComponent;
@@ -37,5 +40,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Team")
 	int32 TeamID;
+	
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	UWidgetComponent* HealthBarWidget;
 };
 

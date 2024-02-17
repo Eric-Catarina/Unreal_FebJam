@@ -8,6 +8,7 @@
 #include "MonoGrindingAlly.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Blueprint/UserWidget.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
 
