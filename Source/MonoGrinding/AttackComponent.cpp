@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
-UAttackComponent::UAttackComponent(): TeamID(0)
+UAttackComponent::UAttackComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
@@ -38,16 +38,24 @@ void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UAttackComponent::PerformAttack()
 {
 	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), FoundActors); // Consider filtering by enemy class
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonoGrindingCharacter::StaticClass(), FoundActors); // Consider filtering by enemy class
 
+	AActor* OwnerActor = GetOwner();
+	AMonoGrindingCharacter* OwnerCharacter = Cast<AMonoGrindingCharacter>(OwnerActor);
+	if (!OwnerCharacter)
+	{
+		return;
+	}
+	
+	TeamID = OwnerCharacter->TeamID;
 	AActor* NearestTarget = nullptr;
 	float NearestDist = AttackRange;
 
 	for (AActor* Actor : FoundActors)
 	{
-		if (Actor->GetClass()->IsChildOf(AMonoGrindingEnemy::StaticClass())) // Ensure it's an enemy
+		AMonoGrindingCharacter* TargetCharacter = Cast<AMonoGrindingCharacter>(Actor);
+		if (TargetCharacter && TargetCharacter->TeamID != TeamID)
 		{
-			
 			float Dist = FVector::Distance(Actor->GetActorLocation(), GetOwner()->GetActorLocation());
 			if (Dist < NearestDist)
 			{
@@ -65,6 +73,6 @@ void UAttackComponent::PerformAttack()
 
 void UAttackComponent::DealDamage(AActor* Target)
 {
-	// Implement damage dealing logic here.
-	// This could involve calling a TakeDamage method on the target actor, for example.
+	UE_LOG(LogTemp, Warning, TEXT("%f was dealed to %s"),AttackDamage,   *Target->GetName());
+	UGameplayStatics::ApplyDamage(Target, AttackDamage, GetOwner()->GetInstigatorController(), GetOwner(), nullptr);
 }

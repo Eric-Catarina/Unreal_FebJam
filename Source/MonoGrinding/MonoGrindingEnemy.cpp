@@ -21,6 +21,7 @@ AMonoGrindingEnemy::AMonoGrindingEnemy()
 	// Adiciona um método para ser chamado quando o evento OnSeePawn é chamado
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AMonoGrindingEnemy::FollowPawn);
 
+	TeamID = 1;
 }
 
 void AMonoGrindingEnemy::FollowPawn(APawn* TargetPawn)

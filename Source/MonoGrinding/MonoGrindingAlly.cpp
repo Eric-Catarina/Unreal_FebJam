@@ -9,7 +9,7 @@
 
 AMonoGrindingAlly::AMonoGrindingAlly()
 {
-
+	TeamID = 0;
 }
 
 void AMonoGrindingAlly::MoveToTargetLocation(const FVector& TargetLocation)

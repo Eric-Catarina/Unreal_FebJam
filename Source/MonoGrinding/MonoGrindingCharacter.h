@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HealthComponent.h"
+#include "AttackComponent.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "MonoGrindingCharacter.generated.h"
@@ -24,8 +25,17 @@ class AMonoGrindingCharacter : public ACharacter
 public:
 	AMonoGrindingCharacter();
 	virtual void BeginPlay() override;
-	
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
+
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	                         AActor* DamageCauser) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
 	UHealthComponent* HealthComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+	UAttackComponent* AttackComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Team")
+	int32 TeamID;
 };
 

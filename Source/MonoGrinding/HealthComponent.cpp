@@ -38,7 +38,7 @@ void UHealthComponent::TakeDamage(float DamageAmount)
 	CurrentHealth = FMath::Clamp(CurrentHealth - DamageAmount, 0.f, MaxHealth);
 	if (CurrentHealth <= 0)
 	{
-		// Lógica para quando a saúde chega a 0
+		UE_LOG(LogTemp, Warning, TEXT("HealthComponent: %s has died!"), *GetOwner()->GetName());
 	}
 }
 

@@ -3,6 +3,7 @@
 #include "MonoGrindingCharacter.h"
 
 #include "HealthComponent.h"
+#include "AttackComponent.h"
 #include "Engine/LocalPlayer.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -38,7 +39,8 @@ AMonoGrindingCharacter::AMonoGrindingCharacter()
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-
+    AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
+    
 }
 
 
@@ -47,3 +49,11 @@ void AMonoGrindingCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+float AMonoGrindingCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float DamageApplied = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+    
+	HealthComponent->TakeDamage(DamageApplied); // Supondo que HealthComponent é seu componente de saúde
+    
+	return DamageApplied;
+}
