@@ -1,29 +1,34 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-// MonoGrindingEnemy.cpp
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "MonoGrindingCharacter.h"
 #include "Perception/PawnSensingComponent.h"
-#include "MonoGrindingEnemy.generated.h"
 
-
+#include "MonoGrindingUnit.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MONOGRINDING_API AMonoGrindingEnemy : public AMonoGrindingCharacter
+class MONOGRINDING_API AMonoGrindingUnit : public AMonoGrindingCharacter
 {
+	
 	GENERATED_BODY()
+	
 public:
-	AMonoGrindingEnemy();
-protected:
-	UFUNCTION()
-	void FollowPawn(APawn* TargetPawn);
-	void Die();
-	void ReviveAsAlly();
+	AMonoGrindingUnit();
+	
 	UPROPERTY()
 	UPawnSensingComponent* PawnSensingComp;
+
+	UFUNCTION()
+	void FollowPawn(APawn* TargetPawn);
+	
+	void ReviveAsAlly();
+	void MoveToTargetLocation(const FVector& TargetLocation);
+	
+protected:
+	virtual void Die() override;
 };

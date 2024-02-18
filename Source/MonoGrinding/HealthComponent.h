@@ -29,13 +29,18 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void Heal(float HealAmount);
-	
+	void SetMaxHealth(float NewMaxHealth);
+	void SetCurrentHealth(float NewHealth);
+	void SetHealthPercent(float NewHealthPercent);
+	void Die();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
 	float CurrentHealth;
 
-	
-		
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* TPoseMontage;
+
 };

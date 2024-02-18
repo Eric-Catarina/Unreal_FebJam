@@ -1,14 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "MonoGrindingUnit.h"
+
+// Fill out your copyright notice in the Description page of Project Settings.
 // MonoGrindingEnemy.cpp
 
-#include "MonoGrindingEnemy.h"
 
 #include "AIController.h"
-#include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
 
-AMonoGrindingEnemy::AMonoGrindingEnemy()
+AMonoGrindingUnit::AMonoGrindingUnit()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 250.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 10.f;
@@ -19,12 +21,12 @@ AMonoGrindingEnemy::AMonoGrindingEnemy()
 	
 	// Esse componente tem um evento chamado OnSeePawn que é chamado quando o inimigo vê o jogador
 	// Adiciona um método para ser chamado quando o evento OnSeePawn é chamado
-	PawnSensingComp->OnSeePawn.AddDynamic(this, &AMonoGrindingEnemy::FollowPawn);
+	PawnSensingComp->OnSeePawn.AddDynamic(this, &AMonoGrindingUnit::FollowPawn);
 
 	TeamID = 1;
 }
 
-void AMonoGrindingEnemy::FollowPawn(APawn* TargetPawn)
+void AMonoGrindingUnit::FollowPawn(APawn* TargetPawn)
 {
 	AAIController* AIController = Cast<AAIController>(GetController());
 	if (AIController && TargetPawn)
@@ -33,7 +35,7 @@ void AMonoGrindingEnemy::FollowPawn(APawn* TargetPawn)
 	}
 }
 
-void AMonoGrindingEnemy::Die()
+void AMonoGrindingUnit::Die()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Enemy %s has died!"), *GetName());
 
@@ -47,7 +49,7 @@ void AMonoGrindingEnemy::Die()
 }
 
 
-void AMonoGrindingEnemy::ReviveAsAlly()
+void AMonoGrindingUnit::ReviveAsAlly()
 {
 
 	// Restaurar a saúde
@@ -58,4 +60,15 @@ void AMonoGrindingEnemy::ReviveAsAlly()
 
 	// Atualizar a IA ou comportamentos para agir como aliado
 	// ...
+}
+
+void AMonoGrindingUnit::MoveToTargetLocation(const FVector& TargetLocation)
+{
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (AIController)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Trying to move to location %s"), *TargetLocation.ToString());
+
+		AIController->MoveToLocation(TargetLocation);
+	}
 }

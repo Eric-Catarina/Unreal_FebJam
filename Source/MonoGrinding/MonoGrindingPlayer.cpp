@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "MonoGrindingAlly.h"
+#include "MonoGrindingEnemy.h"
+#include "MonoGrindingUnit.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Blueprint/UserWidget.h"
@@ -140,7 +142,6 @@ void AMonoGrindingPlayer::SumonAlly()
 	FVector TargetLocation = HitResult.Location;
 	if(HitResult.bBlockingHit)
 	{
-		
 		CreateAllyAtPosition(TargetLocation);
 	}
 }
@@ -161,9 +162,17 @@ void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position)
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 	
 	// Criar a instância do aliado
-	AMonoGrindingAlly* NewAlly = GetWorld()->SpawnActor<AMonoGrindingAlly>(AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
+	if (AllyBlueprint == nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AllyBlueprint is nullptr!"));
+		return;
+	}
+	AMonoGrindingUnit* NewAlly = GetWorld()->SpawnActor<AMonoGrindingUnit>(AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
 
-	// Adicione a lógica adicional aqui, como adicionar o aliado à lista de aliados
+	NewAlly->TeamID = 0;
+	
+
+	
 	if (NewAlly != nullptr)
 	{
 		NewAlly->SpawnDefaultController();

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MonoGrindingAlly.h"
 #include "MonoGrindingCharacter.h"
+#include "MonoGrindingUnit.h"
 #include "MonoGrindingPlayer.generated.h"
 
 /**
@@ -66,10 +67,10 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally")
-	TArray<AMonoGrindingAlly*> Allies;
+	TArray<AMonoGrindingUnit*> Allies;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ally")
-	TSubclassOf<AMonoGrindingAlly> AllyBlueprint;
+	TSubclassOf<AMonoGrindingUnit> AllyBlueprint;
 	
 	AMonoGrindingPlayer();
 	

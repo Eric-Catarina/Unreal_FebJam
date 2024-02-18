@@ -31,7 +31,9 @@ public:
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	                         AActor* DamageCauser) override;
 	float GetHealthPercent() const;
-
+	virtual void Die();
+	bool isDead = false;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
 	UHealthComponent* HealthComponent;
 	
@@ -41,8 +43,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Team")
 	int32 TeamID;
 	
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	UWidgetComponent* HealthBarWidget;
+
+
+
+	
 };
 

@@ -51,7 +51,8 @@ void AMonoGrindingCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	HealthBarWidget = Cast<UWidgetComponent>(GetComponentByClass(UWidgetComponent::StaticClass()));
-	}
+	
+}
 
 float AMonoGrindingCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
@@ -83,3 +84,9 @@ float AMonoGrindingCharacter::GetHealthPercent() const
 	return 0.0f; // Se não encontrou, retorna 0
 }
 
+// Die function
+void AMonoGrindingCharacter::Die()
+{
+	GetCharacterMovement()->DisableMovement();
+	isDead = true;
+}
