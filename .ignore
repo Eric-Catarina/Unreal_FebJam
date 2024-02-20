@@ -1,4 +1,12 @@
-/Saved
-/.vscode
+/.git
 /Content
 /Intermediate
+/Saved
+/DerivedDataCache
+/.direnv
+/.devenv
+/.cache
+/.idea
+/.vscode
+/.ccls-cache
+/scripts
