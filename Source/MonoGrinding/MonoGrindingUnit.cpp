@@ -40,26 +40,26 @@ void AMonoGrindingUnit::Die()
 	UE_LOG(LogTemp, Warning, TEXT("Enemy %s has died!"), *GetName());
 
 	Super::Die();
-
-	GetCharacterMovement()->MaxWalkSpeed = 0;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 0;
-	GetCharacterMovement()->BrakingDecelerationWalking = 0;
-	GetCharacterMovement()->BrakingDecelerationFalling = 0;
-
+	
 }
 
 
 void AMonoGrindingUnit::ReviveAsAlly()
 {
-
-	// Restaurar a saúde
 	HealthComponent->SetCurrentHealth(HealthComponent->MaxHealth);
 
-	// Mudar o TeamID para 0
 	this->TeamID = 0;
+	Super::Revive();
+}
 
-	// Atualizar a IA ou comportamentos para agir como aliado
-	// ...
+bool AMonoGrindingUnit::TryReviveAsAlly()
+{
+	if (HealthComponent->CurrentHealth <= 0 && TeamID == 1)
+	{
+		ReviveAsAlly();
+		return true;
+	}
+	return false;
 }
 
 void AMonoGrindingUnit::MoveToTargetLocation(const FVector& TargetLocation)

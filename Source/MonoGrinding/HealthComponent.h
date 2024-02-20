@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 #include "HealthComponent.generated.h"
 
 
@@ -32,7 +34,9 @@ public:
 	void SetMaxHealth(float NewMaxHealth);
 	void SetCurrentHealth(float NewHealth);
 	void SetHealthPercent(float NewHealthPercent);
+	float GetHealthPercent() const;
 	void Die();
+	void Revive();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
@@ -42,5 +46,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* TPoseMontage;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	UWidgetComponent* HealthBarWidget;
 
+	AActor* OwnerActor;
 };

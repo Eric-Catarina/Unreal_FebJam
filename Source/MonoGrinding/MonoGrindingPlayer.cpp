@@ -150,10 +150,8 @@ void AMonoGrindingPlayer::SumonAlly()
 		AMonoGrindingUnit* HitUnit = Cast<AMonoGrindingUnit>(HitResult.GetActor());
 		if(HitUnit)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("HitUnit is not nullptr!"));
-
-			HitUnit->ReviveAsAlly();
-			Allies.Add(HitUnit);
+			bool ReviveSuccessful = HitUnit->TryReviveAsAlly();
+			if(ReviveSuccessful) Allies.Add(HitUnit);
 		}
 		else
 		{

@@ -49,9 +49,6 @@ AMonoGrindingCharacter::AMonoGrindingCharacter()
 void AMonoGrindingCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	HealthBarWidget = Cast<UWidgetComponent>(GetComponentByClass(UWidgetComponent::StaticClass()));
-	
 }
 
 float AMonoGrindingCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -60,33 +57,24 @@ float AMonoGrindingCharacter::TakeDamage(float DamageAmount, FDamageEvent const&
     
 	HealthComponent->TakeDamage(DamageApplied); // Supondo que HealthComponent é seu componente de saúde
 
-	if(!HealthBarWidget) return DamageApplied;
 	
-	float HealthPercent = GetHealthPercent();
-	FString Command = FString::Printf(TEXT("UpdateHealthBar %f"), HealthPercent);
-	FOutputDeviceNull Ar;
-	
-	HealthBarWidget->GetWidget()->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
   
 	
 	
 	return DamageApplied;
 }
 
-float AMonoGrindingCharacter::GetHealthPercent() const
-{
-	UHealthComponent* HealthComp = FindComponentByClass<UHealthComponent>();
-	if (HealthComp)
-	{
-		return HealthComp->CurrentHealth / HealthComp->MaxHealth;
-	}
 
-	return 0.0f; // Se não encontrou, retorna 0
-}
 
 // Die function
 void AMonoGrindingCharacter::Die()
 {
 	GetCharacterMovement()->DisableMovement();
 	isDead = true;
+}
+
+void AMonoGrindingCharacter::Revive()
+{
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	isDead = false;
 }

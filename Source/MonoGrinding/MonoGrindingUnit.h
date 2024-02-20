@@ -27,6 +27,7 @@ public:
 	void FollowPawn(APawn* TargetPawn);
 	
 	void ReviveAsAlly();
+	bool TryReviveAsAlly();
 	void MoveToTargetLocation(const FVector& TargetLocation);
 	
 protected:
