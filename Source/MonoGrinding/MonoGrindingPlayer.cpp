@@ -29,6 +29,9 @@ AMonoGrindingPlayer::AMonoGrindingPlayer()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	TeamID = 0;
+	
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn)); // Ou o tipo customizado para suas unidades
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -51,6 +54,8 @@ void AMonoGrindingPlayer::BeginPlay()
 			PlayerController->bEnableMouseOverEvents = true;
 		}
 	}
+
+	
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -138,11 +143,22 @@ void AMonoGrindingPlayer::SumonAlly()
 	UE_LOG(LogTemp, Warning, TEXT("Clicked Summon Ally"));
 
 	FHitResult HitResult;
-	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
-	FVector TargetLocation = HitResult.Location;
+	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(ObjectTypes, false, HitResult);
+	FVector TargetLocation = HitResult.ImpactPoint;
 	if(HitResult.bBlockingHit)
 	{
-		CreateAllyAtPosition(TargetLocation);
+		AMonoGrindingUnit* HitUnit = Cast<AMonoGrindingUnit>(HitResult.GetActor());
+		if(HitUnit)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("HitUnit is not nullptr!"));
+
+			HitUnit->ReviveAsAlly();
+			Allies.Add(HitUnit);
+		}
+		else
+		{
+			CreateAllyAtPosition(TargetLocation);
+		}
 	}
 }
 
@@ -154,7 +170,8 @@ void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position)
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
-	
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
 	// Ajustar a posição baseada na posição atual do jogador
 	FVector SpawnLocation = Position;
 	

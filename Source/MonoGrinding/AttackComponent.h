@@ -29,7 +29,6 @@ public:
 	UPROPERTY(EditAnywhere, Category="Attack")
 	float AttackDamage = 10.0f;
 	
-	UPROPERTY(EditAnywhere, Category="Team")
 	int32 TeamID; // 0
 	
 	// Time handle for managing attack interval.

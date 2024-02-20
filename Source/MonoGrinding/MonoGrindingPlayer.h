@@ -71,7 +71,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ally")
 	TSubclassOf<AMonoGrindingUnit> AllyBlueprint;
-	
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	AMonoGrindingPlayer();
 	
 	void BeginPlay();
