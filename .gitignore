@@ -1,9 +1,6 @@
 # Visual Studio 2015 user specific files
 .vs/
 
-.vscode/
-.idea/
-
 # Compiled Object files
 *.slo
 *.lo
@@ -76,8 +73,15 @@ Plugins/*/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 
+# Editor Specific Files
+.idea/
+.vscode/
+MonoGrinding.code-workspace
+
+# Devenv and Direnv
 .devenv/
 .direnv/
 
+# LSP Cache
 .cache/
 .ccls-cache/

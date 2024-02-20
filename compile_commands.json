@@ -1,0 +1,135 @@
+[
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/AttackComponent.cpp",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/AttackComponent.cpp --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/AttackComponent.h",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/AttackComponent.h --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/HealthComponent.cpp",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/HealthComponent.cpp --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/HealthComponent.h",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/HealthComponent.h --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrinding.Build.cs",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrinding.Build.cs --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrinding.cpp",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrinding.cpp --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrinding.h",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrinding.h --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingAlly.cpp",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingAlly.cpp --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingAlly.h",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingAlly.h --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingCharacter.cpp",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingCharacter.cpp --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingCharacter.h",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingCharacter.h --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingEnemy.cpp",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingEnemy.cpp --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingEnemy.h",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingEnemy.h --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingGameMode.cpp",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingGameMode.cpp --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingGameMode.h",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingGameMode.h --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingPlayer.cpp",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingPlayer.cpp --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingPlayer.h",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingPlayer.h --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingUnit.cpp",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingUnit.cpp --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  },
+  {
+    "file": "/home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingUnit.h",
+    "arguments": [
+      "clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter /home/niscolas/bonfire/projects/MonoGrinding/Source/MonoGrinding/MonoGrindingUnit.h --query-driver @/home/niscolas/bonfire/projects/MonoGrinding/.vscode/compileCommands_MonoGrinding/MonoGrinding.1.rsp"
+    ],
+    "directory": "/mnt/storage/unreal_editors/Linux_Unreal_Engine_5.3.2/Engine/Source"
+  }
+]
