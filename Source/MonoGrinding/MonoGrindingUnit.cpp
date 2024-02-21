@@ -28,6 +28,7 @@ AMonoGrindingUnit::AMonoGrindingUnit()
 
 void AMonoGrindingUnit::FollowPawn(APawn* TargetPawn)
 {
+	if (TeamID == 0) return;
 	AAIController* AIController = Cast<AAIController>(GetController());
 	if (AIController && TargetPawn)
 	{
