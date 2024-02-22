@@ -4,8 +4,8 @@
 #include "AttackComponent.h"
 
 #include "MonoGrindingEnemy.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
-
 // Sets default values for this component's properties
 UAttackComponent::UAttackComponent()
 {
@@ -67,6 +67,16 @@ void UAttackComponent::PerformAttack()
 
 	if (NearestTarget)
 	{
+		if(SlashVFX)
+		{
+			// Calcula a rotação do VFX para apontar para o alvo
+			const FVector Direction = (NearestTarget->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal();
+			const FRotator VFXRotation = Direction.Rotation();
+			
+
+			// Spawn do VFX na posição do alvo com a rotação calculada
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SlashVFX,  GetOwner()->GetActorLocation(), VFXRotation);
+		}
 		DealDamage(NearestTarget);
 	}
 }

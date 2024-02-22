@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "NiagaraSystem.h"
 #include "AttackComponent.generated.h"
 
 
@@ -28,6 +29,20 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Attack")
 	float AttackDamage = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	UNiagaraSystem* SlashVFX;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	UNiagaraSystem* SlashVFX2;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	FVector SlashVFXOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	USceneComponent* SlashVFXAttachPoint;
+
 	
 	int32 TeamID; // 0
 	
