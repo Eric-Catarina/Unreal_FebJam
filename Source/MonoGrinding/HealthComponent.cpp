@@ -5,7 +5,7 @@
 
 #include "MonoGrindingCharacter.h"
 #include "Misc/OutputDeviceNull.h"
-
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -46,6 +46,7 @@ void UHealthComponent::TakeDamage(float DamageAmount)
 	SetCurrentHealth(CurrentHealth);
 	if (CurrentHealth <= 0)
 	{
+		
 		Die();
 	}
 }
@@ -109,6 +110,8 @@ void UHealthComponent::Die()
 	AMonoGrindingCharacter* OwnerCharacter = Cast<AMonoGrindingCharacter>(OwnerActor);
 	if (OwnerCharacter)
 	{
+		if (!DeathSound) return;
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());
 		OwnerCharacter->Die();
 	}
 

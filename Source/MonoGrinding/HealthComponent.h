@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "HealthComponent.generated.h"
 
 
@@ -49,6 +50,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	UWidgetComponent* HealthBarWidget;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	USoundBase* DeathSound;
 
 	AActor* OwnerActor;
 };

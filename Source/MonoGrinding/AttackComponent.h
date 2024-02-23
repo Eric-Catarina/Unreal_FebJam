@@ -43,6 +43,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
 	USceneComponent* SlashVFXAttachPoint;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	USoundBase* HitSound;
 	
 	int32 TeamID; // 0
 	

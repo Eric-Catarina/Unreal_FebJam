@@ -41,6 +41,10 @@ void UAttackComponent::PerformAttack()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonoGrindingCharacter::StaticClass(), FoundActors); // Consider filtering by enemy class
 
 	AActor* OwnerActor = GetOwner();
+
+	UHealthComponent* HealthComp = OwnerActor->FindComponentByClass<UHealthComponent>();
+	if (!HealthComp || HealthComp->CurrentHealth <= 0) return; // Se não encontrar ou se a saúde for 0 ou menos, retorna
+
 	AMonoGrindingCharacter* OwnerCharacter = Cast<AMonoGrindingCharacter>(OwnerActor);
 	if (!OwnerCharacter)
 	{
@@ -50,6 +54,7 @@ void UAttackComponent::PerformAttack()
 	TeamID = OwnerCharacter->TeamID;
 	AActor* NearestTarget = nullptr;
 	float NearestDist = AttackRange;
+	
 
 	for (AActor* Actor : FoundActors)
 	{
@@ -67,7 +72,7 @@ void UAttackComponent::PerformAttack()
 
 	if (NearestTarget)
 	{
-		if(SlashVFX)
+		if(SlashVFX && SlashVFX2)
 		{
 			// Calcula a rotação do VFX para apontar para o alvo
 			const FVector Direction = (NearestTarget->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal();
@@ -76,7 +81,17 @@ void UAttackComponent::PerformAttack()
 
 			// Spawn do VFX na posição do alvo com a rotação calculada
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SlashVFX,  GetOwner()->GetActorLocation(), VFXRotation);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SlashVFX2,  NearestTarget->GetActorLocation(), VFXRotation);
+
 		}
+
+		if(HitSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetOwner()->GetActorLocation());
+		}
+		
+
+		
 		DealDamage(NearestTarget);
 	}
 }
