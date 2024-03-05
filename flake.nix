@@ -41,31 +41,70 @@
             ue4cli
           '';
         };
+
+        pwd = builtins.getEnv "PWD";
+        devenvCustomDirPath = "./devenv-custom";
+        ueCentosBinariesDirPath = "${ueRootDirPath}/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu/bin";
+        ueBatchFilesDirPath = "${ueRootDirPath}/Engine/Build/BatchFiles/Linux";
+        ueEditorBinPath = "${ueRootDirPath}/Engine/Binaries/Linux/UnrealEditor";
+        ueRootDirPath = "/mnt/storage/unreal_editors/ue5.3.2";
+        uprojectPath = "${pwd}/MonoGrinding.uproject";
       in {
         default = devenv.lib.mkShell {
           inherit inputs pkgs;
           modules = [
             {
               # https://devenv.sh/reference/options/
-              packages = [
-                # pkgs.ccls
+              packages = with pkgs; [
+                clang-tools_16
+                clang_16
+                dotnet-sdk
+                libllvm
                 mach-nix-pkgs
-                pkgs.clang-tools_16
-                pkgs.libllvm
-                pkgs.python3
+                python3
               ];
 
-              scripts.devenv-gen-uecli.exec = ''
-                nix-shell -p clang_16 dotnet-sdk --command ./scripts/clangdb_gen_uecli.sh
-              '';
+              scripts = {
+                de-open.exec = ''
+                  steam-run ${ueEditorBinPath} ${uprojectPath}
+                '';
 
-              scripts.devenv-gen-buildsh.exec = ''
-                nix-shell -p clang_16 dotnet-sdk --command ./scripts/clangdb_gen_buildsh.sh
-              '';
+                de-use_nix_bins.exec = ''
+                  mv ${ueBatchFilesDirPath}/SetupDotnet.sh ${ueBatchFilesDirPath}/SetupDotnet.sh.bak
+                  mv ${ueCentosBinariesDirPath}/clang++ ${ueCentosBinariesDirPath}/clang++.bak
+                  mv ${ueCentosBinariesDirPath}/llvm-ar ${ueCentosBinariesDirPath}/llvm-ar.bak
 
-              scripts.devenv-debug-skipbuild.exec = ''
-                nix-shell -p clang_16 dotnet-sdk --command ./scripts/clangdb_gen_debug_skip_build.sh
-              '';
+                  cp ${devenvCustomDirPath}/SetupDotnet-Patched.sh ${ueBatchFilesDirPath}/SetupDotnet.sh
+                  cp ${devenvCustomDirPath}/system_clang++_wrapper ${ueCentosBinariesDirPath}/clang++
+                  cp ${devenvCustomDirPath}/system_llvm-ar_wrapper ${ueCentosBinariesDirPath}/llvm-ar
+                '';
+
+                de-use_ue_bins.exec = ''
+                  mv ${ueBatchFilesDirPath}/SetupDotnet.sh.bak ${ueBatchFilesDirPath}/SetupDotnet.sh
+                  mv ${ueCentosBinariesDirPath}/clang++.bak ${ueCentosBinariesDirPath}/clang++
+                  mv ${ueCentosBinariesDirPath}/llvm-ar.bak ${ueCentosBinariesDirPath}/llvm-ar
+                '';
+
+                de-uecli_gen.exec = ''
+                  de-use_nix_bins
+                  UE_USE_SYSTEM_DOTNET=1 ${devenvCustomDirPath}/uecli_gen_wrapper.sh
+                  de-use_ue_bins
+                '';
+
+                de-ubt_gen.exec = ''
+                  ${ueRootDirPath}/Engine/Build/BatchFiles/Linux/Build.sh -mode=GenerateClangDatabase \
+                    -project=${uprojectPath} MonoGrindingEditor Development Linux -OutputDir=${pwd}
+                '';
+
+                de-debug-skipbuild.exec = ''
+                  de-use_nix_bins
+
+                  UE_USE_SYSTEM_DOTNET=1 ${ueRootDirPath}/Engine/Build/BatchFiles/Linux/Build.sh \
+                    MonoGrindingEditor Linux DebugGame -SkipBuild -project=${uprojectPath}
+
+                  de-use_ue_bins
+                '';
+              };
             }
           ];
         };

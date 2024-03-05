@@ -6,7 +6,5 @@
 /.direnv
 /.devenv
 /.cache
-/.idea
 /.vscode
-/.ccls-cache
-/scripts
+/devenv-custom

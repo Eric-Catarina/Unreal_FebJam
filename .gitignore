@@ -82,6 +82,9 @@ MonoGrinding.code-workspace
 .devenv/
 .direnv/
 
-# LSP Cache
+# LSP
 .cache/
 .ccls-cache/
+compile_commands.json
+
+Makefile

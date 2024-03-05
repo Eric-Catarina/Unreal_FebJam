@@ -7,5 +7,5 @@ j = json.load(sys.stdin)
 for o in j:
     file = o["file"]
     arg = o["arguments"][1]
-    o["arguments"] = ["clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter " + file + " --query-driver " + arg]
+    o["arguments"] = ["clang++ -std=c++20 -ferror-limit=0 -Wall -Wextra -Wpedantic -Wshadow-all -Wno-unused-parameter " + file + " " + arg]
 print(json.dumps(j, indent=2))' > compile_commands.json
