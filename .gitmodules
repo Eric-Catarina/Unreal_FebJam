@@ -1,0 +1,3 @@
+[submodule "Plugins/UE5_Plugin-EditorUIScale"]
+	path = Plugins/UE5_Plugin-EditorUIScale
+	url = https://github.com/zouiqad/UE5_Plugin-EditorUIScale.git
