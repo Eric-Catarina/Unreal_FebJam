@@ -87,4 +87,7 @@ MonoGrinding.code-workspace
 .ccls-cache/
 compile_commands.json
 
+# Flake Logs
+de-*.log
+
 Makefile

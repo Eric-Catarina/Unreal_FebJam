@@ -42,13 +42,14 @@
           '';
         };
 
-        pwd = builtins.getEnv "PWD";
         devenvCustomDirPath = "./devenv-custom";
-        ueCentosBinariesDirPath = "${ueRootDirPath}/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu/bin";
+        projectName = "MonoGrinding";
+        pwd = builtins.getEnv "PWD";
         ueBatchFilesDirPath = "${ueRootDirPath}/Engine/Build/BatchFiles/Linux";
+        ueCentosBinariesDirPath = "${ueRootDirPath}/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu/bin";
         ueEditorBinPath = "${ueRootDirPath}/Engine/Binaries/Linux/UnrealEditor";
         ueRootDirPath = "/mnt/storage/unreal_editors/ue5.3.2";
-        uprojectPath = "${pwd}/MonoGrinding.uproject";
+        uprojectPath = "${pwd}/${projectName}.uproject";
       in {
         default = devenv.lib.mkShell {
           inherit inputs pkgs;
@@ -66,7 +67,7 @@
 
               scripts = {
                 de-open.exec = ''
-                  steam-run ${ueEditorBinPath} ${uprojectPath}
+                  nvidia-offload steam-run ${ueEditorBinPath} ${uprojectPath} &
                 '';
 
                 de-use_nix_bins.exec = ''
@@ -93,16 +94,31 @@
 
                 de-ubt_gen.exec = ''
                   ${ueRootDirPath}/Engine/Build/BatchFiles/Linux/Build.sh -mode=GenerateClangDatabase \
-                    -project=${uprojectPath} MonoGrindingEditor Development Linux -OutputDir=${pwd}
+                    -project=${uprojectPath} ${projectName}Editor Development Linux -OutputDir=${pwd}
                 '';
 
                 de-debug-skipbuild.exec = ''
                   de-use_nix_bins
 
                   UE_USE_SYSTEM_DOTNET=1 ${ueRootDirPath}/Engine/Build/BatchFiles/Linux/Build.sh \
-                    MonoGrindingEditor Linux DebugGame -SkipBuild -project=${uprojectPath}
+                    ${projectName}Editor Linux DebugGame -SkipBuild -project=${uprojectPath}
 
                   de-use_ue_bins
+                '';
+
+                de-gen_full.exec = ''
+                  running_msg="C++ Gen Running..."
+                  completed_msg="C++ Gen Completed!"
+
+                  uecli_gen_log_path="de-uecli_gen.log"
+                  skipbuild_log_path="de-debug-skipbuild.log"
+
+                  ${pkgs.libnotify}/bin/notify-send --icon=dialog-information "${projectName}" "$running_msg"
+                  echo "$running_msg"
+                  de-uecli_gen &> "$uecli_gen_log_path" || (cat "$uecli_gen_log_path" | grep --color error && false)
+                  de-debug-skipbuild &> "$skipbuild_log_path" || (cat "$skipbuild_log_path" | grep --color error && false)
+                  echo "$completed_msg"
+                  ${pkgs.libnotify}/bin/notify-send --icon=face-smile "${projectName}" "$completed_msg"
                 '';
               };
             }
