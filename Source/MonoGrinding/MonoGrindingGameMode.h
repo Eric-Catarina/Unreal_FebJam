@@ -7,13 +7,9 @@
 #include "MonoGrindingGameMode.generated.h"
 
 UCLASS(minimalapi)
-class AMonoGrindingGameMode : public AGameModeBase
-{
-	GENERATED_BODY()
+class AMonoGrindingGameMode : public AGameModeBase {
+    GENERATED_BODY()
 
 public:
-	AMonoGrindingGameMode();
+    AMonoGrindingGameMode();
 };
-
-
-

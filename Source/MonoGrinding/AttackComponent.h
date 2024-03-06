@@ -2,66 +2,65 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "CoreMinimal.h"
 #include "NiagaraSystem.h"
+
 #include "AttackComponent.generated.h"
 
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class MONOGRINDING_API UAttackComponent : public UActorComponent
-{
-	GENERATED_BODY()
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+class MONOGRINDING_API UAttackComponent : public UActorComponent {
+    GENERATED_BODY()
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-	
-public:	
-	// Sets default values for this component's properties
-	UAttackComponent();
-	
-	UPROPERTY(EditAnywhere, Category="Attack")
-	float AttackInterval = 1.0f;
+    // Called when the game starts
+    virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category="Attack")
-	float AttackRange = 100.0f;
+public:
+    // Sets default values for this component's properties
+    UAttackComponent();
 
-	UPROPERTY(EditAnywhere, Category="Attack")
-	float AttackDamage = 10.0f;
+    UPROPERTY(EditAnywhere, Category = "Attack")
+    float AttackInterval = 1.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	UNiagaraSystem* SlashVFX;
+    UPROPERTY(EditAnywhere, Category = "Attack")
+    float AttackRange = 100.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	UNiagaraSystem* SlashVFX2;
+    UPROPERTY(EditAnywhere, Category = "Attack")
+    float AttackDamage = 10.0f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+    UNiagaraSystem *SlashVFX;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	FVector SlashVFXOffset;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+    UNiagaraSystem *SlashVFX2;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	USceneComponent* SlashVFXAttachPoint;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+    FVector SlashVFXOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
-	USoundBase* HitSound;
-	
-	int32 TeamID; // 0
-	
-	// Time handle for managing attack interval.
-	FTimerHandle TimerHandle_Attack;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+    USceneComponent *SlashVFXAttachPoint;
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
-	void PerformAttack();
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+    USoundBase *HitSound;
+
+    int32 TeamID; // 0
+
+    // Time handle for managing attack interval.
+    FTimerHandle TimerHandle_Attack;
+
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+                               FActorComponentTickFunction *ThisTickFunction) override;
+
+    void PerformAttack();
 
 private:
-	void DealDamage(AActor* Target);
+    void DealDamage(AActor *Target);
 
-	bool IsEnemy(AActor* Target)
-	{
-		// Implement logic to determine if the target is an enemy based on TeamID
-		// This could involve checking a similar TeamID property on the target actor/component
-		return true;
-	}
+    bool IsEnemy(AActor *Target) {
+        // Implement logic to determine if the target is an enemy based on TeamID
+        // This could involve checking a similar TeamID property on the target
+        // actor/component
+        return true;
+    }
 };

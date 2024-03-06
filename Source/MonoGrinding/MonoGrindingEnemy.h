@@ -6,24 +6,23 @@
 #include "CoreMinimal.h"
 #include "MonoGrindingCharacter.h"
 #include "Perception/PawnSensingComponent.h"
+
 #include "MonoGrindingEnemy.generated.h"
 
-
-
 /**
- * 
+ *
  */
 UCLASS()
-class MONOGRINDING_API AMonoGrindingEnemy : public AMonoGrindingCharacter
-{
-	GENERATED_BODY()
+class MONOGRINDING_API AMonoGrindingEnemy : public AMonoGrindingCharacter {
+    GENERATED_BODY()
 public:
-	AMonoGrindingEnemy();
+    AMonoGrindingEnemy();
+
 protected:
-	UFUNCTION()
-	void FollowPawn(APawn* TargetPawn);
-	void Die();
-	void ReviveAsAlly();
-	UPROPERTY()
-	UPawnSensingComponent* PawnSensingComp;
+    UFUNCTION()
+    void FollowPawn(APawn *TargetPawn);
+    void Die();
+    void ReviveAsAlly();
+    UPROPERTY()
+    UPawnSensingComponent *PawnSensingComp;
 };

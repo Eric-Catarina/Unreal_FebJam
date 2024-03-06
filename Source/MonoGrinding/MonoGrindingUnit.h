@@ -9,27 +9,26 @@
 #include "MonoGrindingUnit.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class MONOGRINDING_API AMonoGrindingUnit : public AMonoGrindingCharacter
-{
-	
-	GENERATED_BODY()
-	
-public:
-	AMonoGrindingUnit();
-	
-	UPROPERTY()
-	UPawnSensingComponent* PawnSensingComp;
+class MONOGRINDING_API AMonoGrindingUnit : public AMonoGrindingCharacter {
 
-	UFUNCTION()
-	void FollowPawn(APawn* TargetPawn);
-	
-	void ReviveAsAlly();
-	bool TryReviveAsAlly();
-	void MoveToTargetLocation(const FVector& TargetLocation);
-	
+    GENERATED_BODY()
+
+public:
+    AMonoGrindingUnit();
+
+    UPROPERTY()
+    UPawnSensingComponent *PawnSensingComp;
+
+    UFUNCTION()
+    void FollowPawn(APawn *TargetPawn);
+
+    void ReviveAsAlly();
+    bool TryReviveAsAlly();
+    void MoveToTargetLocation(const FVector &TargetLocation);
+
 protected:
-	virtual void Die() override;
+    virtual void Die() override;
 };

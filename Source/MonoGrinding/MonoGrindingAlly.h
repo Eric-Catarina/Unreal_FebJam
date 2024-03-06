@@ -4,17 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "MonoGrindingCharacter.h"
+
 #include "MonoGrindingAlly.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class MONOGRINDING_API AMonoGrindingAlly : public AMonoGrindingCharacter
-{
-	GENERATED_BODY()
+class MONOGRINDING_API AMonoGrindingAlly : public AMonoGrindingCharacter {
+    GENERATED_BODY()
 public:
-	AMonoGrindingAlly();
-	void MoveToTargetLocation(const FVector& TargetLocation);
-
+    AMonoGrindingAlly();
+    void MoveToTargetLocation(const FVector &TargetLocation);
 };

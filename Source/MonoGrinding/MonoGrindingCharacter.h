@@ -2,12 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "HealthComponent.h"
 #include "AttackComponent.h"
+#include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "HealthComponent.h"
 #include "Logging/LogMacros.h"
-
 #include "MonoGrindingCharacter.generated.h"
 
 class USpringArmComponent;
@@ -18,35 +17,27 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
-UCLASS(config=Game)
-class AMonoGrindingCharacter : public ACharacter
-{
-	GENERATED_BODY()
+UCLASS(config = Game)
+class AMonoGrindingCharacter : public ACharacter {
+    GENERATED_BODY()
 
 public:
-	AMonoGrindingCharacter();
-	virtual void BeginPlay() override;
+    AMonoGrindingCharacter();
+    virtual void BeginPlay() override;
 
-	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	                         AActor* DamageCauser) override;
-	float GetHealthPercent() const;
-	virtual void Die();
-	void Revive();
-	bool isDead = false;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
-	UHealthComponent* HealthComponent;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
-	UAttackComponent* AttackComponent;
+    virtual float TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent,
+                             AController *EventInstigator, AActor *DamageCauser) override;
+    float GetHealthPercent() const;
+    virtual void Die();
+    void Revive();
+    bool isDead = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Team")
-	int32 TeamID;
-	
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
+    UHealthComponent *HealthComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+    UAttackComponent *AttackComponent;
 
-
-
-	
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+    int32 TeamID;
 };
-

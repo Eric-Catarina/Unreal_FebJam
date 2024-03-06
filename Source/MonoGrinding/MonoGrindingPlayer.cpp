@@ -1,197 +1,189 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "MonoGrindingPlayer.h"
 
+#include "Blueprint/UserWidget.h"
+#include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "MonoGrindingAlly.h"
 #include "MonoGrindingEnemy.h"
 #include "MonoGrindingUnit.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Blueprint/UserWidget.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
 
-AMonoGrindingPlayer::AMonoGrindingPlayer()
-{
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-	CameraBoom->bDoCollisionTest = false;
-	
-	// Create a follow camera
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+AMonoGrindingPlayer::AMonoGrindingPlayer() {
+    CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+    CameraBoom->SetupAttachment(RootComponent);
+    CameraBoom->TargetArmLength =
+        400.0f; // The camera follows at this distance behind the character
+    CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+    CameraBoom->bDoCollisionTest = false;
 
-	TeamID = 0;
-	
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn)); // Ou o tipo customizado para suas unidades
+    // Create a follow camera
+    FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+    FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+    // Attach the camera to the end of the boom and let the boom adjust to match
+    // the controller orientation
+    FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+    TeamID = 0;
+
+    ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
+    ObjectTypes.Add(
+        UEngineTypes::ConvertToObjectType(ECC_Pawn)); // Ou o tipo customizado para suas unidades
+
+    // Note: The skeletal mesh and anim blueprint references on the Mesh component
+    // (inherited from Character) are set in the derived blueprint asset named
+    // ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
-void AMonoGrindingPlayer::BeginPlay()
-{
-	// Call the base class  
-	Super::BeginPlay();
+void AMonoGrindingPlayer::BeginPlay() {
+    // Call the base class
+    Super::BeginPlay();
 
-	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
-			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-			PlayerController->bShowMouseCursor = true;
-			PlayerController->bEnableClickEvents = true;
-			PlayerController->bEnableMouseOverEvents = true;
-		}
-	}
-
-	
+    // Add Input Mapping Context
+    if (APlayerController *PlayerController = Cast<APlayerController>(Controller)) {
+        if (UEnhancedInputLocalPlayerSubsystem *Subsystem =
+                ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+                    PlayerController->GetLocalPlayer())) {
+            Subsystem->AddMappingContext(DefaultMappingContext, 0);
+            PlayerController->bShowMouseCursor = true;
+            PlayerController->bEnableClickEvents = true;
+            PlayerController->bEnableMouseOverEvents = true;
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void AMonoGrindingPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
-		EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this, &AMonoGrindingPlayer::MoveAllies);
+void AMonoGrindingPlayer::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) {
+    // Set up action bindings
+    if (UEnhancedInputComponent *EnhancedInputComponent =
+            Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 
-		EnhancedInputComponent->BindAction(SummonAllyAction, ETriggerEvent::Triggered, this, &AMonoGrindingPlayer::SumonAlly);
+        EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this,
+                                           &AMonoGrindingPlayer::MoveAllies);
 
-		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+        EnhancedInputComponent->BindAction(SummonAllyAction, ETriggerEvent::Triggered, this,
+                                           &AMonoGrindingPlayer::SumonAlly);
 
-		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMonoGrindingPlayer::Move);
+        // Jumping
+        EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this,
+                                           &ACharacter::Jump);
+        EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this,
+                                           &ACharacter::StopJumping);
 
-		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMonoGrindingPlayer::Look);
-	}
-	else
-	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
-	}
+        // Moving
+        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this,
+                                           &AMonoGrindingPlayer::Move);
+
+        // Looking
+        EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
+                                           &AMonoGrindingPlayer::Look);
+    } else {
+        UE_LOG(LogTemplateCharacter, Error,
+               TEXT("'%s' Failed to find an Enhanced Input component! This template "
+                    "is built to use the Enhanced Input system. If you intend to use "
+                    "the legacy system, then you will need to update this C++ file."),
+               *GetNameSafe(this));
+    }
 }
 
-void AMonoGrindingPlayer::Move(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
+void AMonoGrindingPlayer::Move(const FInputActionValue &Value) {
+    // input is a Vector2D
+    FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
-	{
+    if (Controller != nullptr) {
 
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
+        // find out which way is forward
+        const FRotator Rotation = Controller->GetControlRotation();
+        const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
-		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+        // get forward vector
+        const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 
-		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-	}
+        // get right vector
+        const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+        // add movement
+        AddMovementInput(ForwardDirection, MovementVector.Y);
+        AddMovementInput(RightDirection, MovementVector.X);
+    }
 }
 
-void AMonoGrindingPlayer::Look(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
+void AMonoGrindingPlayer::Look(const FInputActionValue &Value) {
+    // input is a Vector2D
+    FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
-	{
-		// add yaw and pitch input to controller
-		// AddControllerYawInput(LookAxisVector.X);
-		// AddControllerPitchInput(LookAxisVector.Y);
-	}
+    if (Controller != nullptr) {
+        // add yaw and pitch input to controller
+        // AddControllerYawInput(LookAxisVector.X);
+        // AddControllerPitchInput(LookAxisVector.Y);
+    }
 }
 
-void AMonoGrindingPlayer::MoveAllies()
-{
-	
+void AMonoGrindingPlayer::MoveAllies() {
 
-	FHitResult HitResult;
-	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
-	FVector TargetLocation = HitResult.Location;
-	if(HitResult.bBlockingHit)
-	{
-		for(auto& Ally : Allies)
-		{
-			Ally->MoveToTargetLocation(TargetLocation);
-		}
-	}
+    FHitResult HitResult;
+    GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false,
+                                                                    HitResult);
+    FVector TargetLocation = HitResult.Location;
+    if (HitResult.bBlockingHit) {
+        for (auto &Ally : Allies) {
+            Ally->MoveToTargetLocation(TargetLocation);
+        }
+    }
 }
-void AMonoGrindingPlayer::SumonAlly()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Clicked Summon Ally"));
+void AMonoGrindingPlayer::SumonAlly() {
+    UE_LOG(LogTemp, Warning, TEXT("Clicked Summon Ally"));
 
-	FHitResult HitResult;
-	GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(ObjectTypes, false, HitResult);
-	FVector TargetLocation = HitResult.ImpactPoint;
-	if(HitResult.bBlockingHit)
-	{
-		AMonoGrindingUnit* HitUnit = Cast<AMonoGrindingUnit>(HitResult.GetActor());
-		if(HitUnit)
-		{
-			bool ReviveSuccessful = HitUnit->TryReviveAsAlly();
-			if(ReviveSuccessful) Allies.Add(HitUnit);
-		}
-		else
-		{
-			CreateAllyAtPosition(TargetLocation);
-		}
-	}
+    FHitResult HitResult;
+    GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(ObjectTypes, false,
+                                                                              HitResult);
+    FVector TargetLocation = HitResult.ImpactPoint;
+    if (HitResult.bBlockingHit) {
+        AMonoGrindingUnit *HitUnit = Cast<AMonoGrindingUnit>(HitResult.GetActor());
+        if (HitUnit) {
+            bool ReviveSuccessful = HitUnit->TryReviveAsAlly();
+            if (ReviveSuccessful)
+                Allies.Add(HitUnit);
+        } else {
+            CreateAllyAtPosition(TargetLocation);
+        }
+    }
 }
 
-void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position)
-{
-	if (GetWorld() == nullptr)
-		return;
-	
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = this;
-	SpawnParams.Instigator = GetInstigator();
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position) {
+    if (GetWorld() == nullptr)
+        return;
 
-	// Ajustar a posição baseada na posição atual do jogador
-	FVector SpawnLocation = Position;
-	
-	// Define a rotação do aliado, se necessário. Neste exemplo, sem rotação.
-	FRotator SpawnRotation = FRotator::ZeroRotator;
-	
-	// Criar a instância do aliado
-	if (AllyBlueprint == nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AllyBlueprint is nullptr!"));
-		return;
-	}
-	AMonoGrindingUnit* NewAlly = GetWorld()->SpawnActor<AMonoGrindingUnit>(AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = GetInstigator();
+    SpawnParams.SpawnCollisionHandlingOverride =
+        ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	NewAlly->TeamID = 0;
-	
+    // Ajustar a posição baseada na posição atual do jogador
+    FVector SpawnLocation = Position;
 
-	
-	if (NewAlly != nullptr)
-	{
-		NewAlly->SpawnDefaultController();
-		Allies.Add(NewAlly);
-	}
+    // Define a rotação do aliado, se necessário. Neste exemplo, sem rotação.
+    FRotator SpawnRotation = FRotator::ZeroRotator;
+
+    // Criar a instância do aliado
+    if (AllyBlueprint == nullptr) {
+        UE_LOG(LogTemp, Warning, TEXT("AllyBlueprint is nullptr!"));
+        return;
+    }
+    AMonoGrindingUnit *NewAlly = GetWorld()->SpawnActor<AMonoGrindingUnit>(
+        AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
+
+    NewAlly->TeamID = 0;
+
+    if (NewAlly != nullptr) {
+        NewAlly->SpawnDefaultController();
+        Allies.Add(NewAlly);
+    }
 }
-
