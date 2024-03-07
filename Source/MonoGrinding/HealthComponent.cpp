@@ -2,6 +2,7 @@
 
 #include "HealthComponent.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/OutputDeviceNull.h"
 #include "MonoGrindingCharacter.h"
@@ -18,19 +19,16 @@ UHealthComponent::UHealthComponent() {
     CurrentHealth = MaxHealth;
 }
 
-// Called when the game starts
 void UHealthComponent::BeginPlay() {
     Super::BeginPlay();
 
-    // ...
-
-    OwnerActor = GetOwner();
     HealthBarWidget =
-        Cast<UWidgetComponent>(OwnerActor->GetComponentByClass(UWidgetComponent::StaticClass()));
+        Cast<UWidgetComponent>(GetOwner()->GetComponentByClass(UWidgetComponent::StaticClass()));
 }
 
 // Called every frame
-void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+void UHealthComponent::TickComponent(float DeltaTime,
+                                     ELevelTick TickType,
                                      FActorComponentTickFunction *ThisTickFunction) {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -38,17 +36,17 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 void UHealthComponent::TakeDamage(float DamageAmount) {
-    CurrentHealth = FMath::Clamp(CurrentHealth - DamageAmount, 0.f, MaxHealth);
-    SetCurrentHealth(CurrentHealth);
-    if (CurrentHealth <= 0) {
+    float newHealthAmount = FMath::Clamp(CurrentHealth - DamageAmount, 0.f, MaxHealth);
+    SetCurrentHealth(newHealthAmount);
 
+    if (CurrentHealth <= 0) {
         Die();
     }
 }
 
 void UHealthComponent::Heal(float HealAmount) {
-    CurrentHealth = FMath::Clamp(CurrentHealth + HealAmount, 0.f, MaxHealth);
-    SetCurrentHealth(CurrentHealth);
+    float newHealthAmount = FMath::Clamp(CurrentHealth + HealAmount, 0.f, MaxHealth);
+    SetCurrentHealth(newHealthAmount);
 }
 
 void UHealthComponent::SetMaxHealth(float NewMaxHealth) {
@@ -97,22 +95,23 @@ void UHealthComponent::Die() {
     // 	}
     // }
 
-    AMonoGrindingCharacter *OwnerCharacter = Cast<AMonoGrindingCharacter>(OwnerActor);
-    if (OwnerCharacter) {
-        if (!DeathSound)
-            return;
+    IsDead = true;
+    MovementComponent->DisableMovement();
+
+    if (DeathSound) {
         UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());
-        OwnerCharacter->Die();
     }
 }
 
 void UHealthComponent::Revive() {
-    // Play normal animations back
-    if (!OwnerActor)
-        return;
-    USkeletalMeshComponent *MeshComp = Cast<USkeletalMeshComponent>(
-        OwnerActor->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
-    if (MeshComp) {
-        MeshComp->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+    IsDead = false;
+    MovementComponent->SetMovementMode(MOVE_Walking);
+
+    AActor *ownerActor = GetOwner();
+    USkeletalMeshComponent *meshComponent = Cast<USkeletalMeshComponent>(
+        ownerActor->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
+
+    if (meshComponent) {
+        meshComponent->SetAnimationMode(EAnimationMode::AnimationBlueprint);
     }
 }

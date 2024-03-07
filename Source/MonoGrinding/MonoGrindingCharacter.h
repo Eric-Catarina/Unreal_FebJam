@@ -24,13 +24,13 @@ class AMonoGrindingCharacter : public ACharacter {
 public:
     AMonoGrindingCharacter();
     virtual void BeginPlay() override;
-
-    virtual float TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent,
-                             AController *EventInstigator, AActor *DamageCauser) override;
+    virtual float TakeDamage(float Damage,
+                             FDamageEvent const &DamageEvent,
+                             AController *EventInstigator,
+                             AActor *DamageCauser) override;
     float GetHealthPercent() const;
     virtual void Die();
     void Revive();
-    bool isDead = false;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
     UHealthComponent *HealthComponent;

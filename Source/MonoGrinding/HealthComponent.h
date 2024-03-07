@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Components/WidgetComponent.h"
 #include "CoreMinimal.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "HealthComponent.generated.h"
@@ -15,16 +16,14 @@ class MONOGRINDING_API UHealthComponent : public UActorComponent {
     GENERATED_BODY()
 
 public:
-    // Sets default values for this component's properties
     UHealthComponent();
 
 protected:
-    // Called when the game starts
     virtual void BeginPlay() override;
 
 public:
-    // Called every frame
-    virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+    virtual void TickComponent(float DeltaTime,
+                               ELevelTick TickType,
                                FActorComponentTickFunction *ThisTickFunction) override;
 
     UFUNCTION(BlueprintCallable, Category = "Health")
@@ -32,12 +31,27 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Health")
     void Heal(float HealAmount);
-    void SetMaxHealth(float NewMaxHealth);
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
     void SetCurrentHealth(float NewHealth);
-    void SetHealthPercent(float NewHealthPercent);
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetMaxHealth(float NewMaxHealth);
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
     float GetHealthPercent() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetHealthPercent(float NewHealthPercent);
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
     void Die();
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
     void Revive();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+    UCharacterMovementComponent *MovementComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
     float MaxHealth;
@@ -54,5 +68,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
     USoundBase *DeathSound;
 
-    AActor *OwnerActor;
+private:
+    bool IsDead = false;
 };

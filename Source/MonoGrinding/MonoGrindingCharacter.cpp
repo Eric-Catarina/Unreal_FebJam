@@ -13,9 +13,6 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
-//////////////////////////////////////////////////////////////////////////
-// AMonoGrindingCharacter
-
 AMonoGrindingCharacter::AMonoGrindingCharacter() {
     // Set size for collision capsule
     GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -40,6 +37,8 @@ AMonoGrindingCharacter::AMonoGrindingCharacter() {
     GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
     HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+    HealthComponent->MovementComponent = GetCharacterMovement();
+
     AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
 }
 
@@ -47,24 +46,20 @@ void AMonoGrindingCharacter::BeginPlay() {
     Super::BeginPlay();
 }
 
-float AMonoGrindingCharacter::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent,
-                                         AController *EventInstigator, AActor *DamageCauser) {
-    float DamageApplied =
-        Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+float AMonoGrindingCharacter::TakeDamage(float Damage,
+                                         FDamageEvent const &DamageEvent,
+                                         AController *EventInstigator,
+                                         AActor *DamageCauser) {
+    float processedDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+    HealthComponent->TakeDamage(processedDamage);
 
-    HealthComponent->TakeDamage(
-        DamageApplied); // Supondo que HealthComponent é seu componente de saúde
-
-    return DamageApplied;
+    return processedDamage;
 }
 
-// Die function
 void AMonoGrindingCharacter::Die() {
-    GetCharacterMovement()->DisableMovement();
-    isDead = true;
+    HealthComponent->Die();
 }
 
 void AMonoGrindingCharacter::Revive() {
-    GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-    isDead = false;
+    HealthComponent->Revive();
 }
