@@ -8,3 +8,5 @@
 /.cache
 /.vscode
 /devenv-custom
+/Plugins/UE5_Plugin-EditorUIScale/.git
+/Plugins/UE5_Plugin-EditorUIScale/Intermediate
