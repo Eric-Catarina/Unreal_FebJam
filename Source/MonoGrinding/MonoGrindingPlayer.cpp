@@ -56,14 +56,10 @@ void AMonoGrindingPlayer::BeginPlay() {
     }
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
-
 void AMonoGrindingPlayer::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) {
     // Set up action bindings
     if (UEnhancedInputComponent *EnhancedInputComponent =
             Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-
         EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this,
                                            &AMonoGrindingPlayer::MoveAllies);
 
@@ -97,7 +93,6 @@ void AMonoGrindingPlayer::Move(const FInputActionValue &Value) {
     FVector2D MovementVector = Value.Get<FVector2D>();
 
     if (Controller != nullptr) {
-
         // find out which way is forward
         const FRotator Rotation = Controller->GetControlRotation();
         const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -126,17 +121,18 @@ void AMonoGrindingPlayer::Look(const FInputActionValue &Value) {
 }
 
 void AMonoGrindingPlayer::MoveAllies() {
-
     FHitResult HitResult;
     GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false,
                                                                     HitResult);
     FVector TargetLocation = HitResult.Location;
-    if (HitResult.bBlockingHit) {
-        for (auto &Ally : Allies) {
-            Ally->MoveToTargetLocation(TargetLocation);
-        }
+    if (!HitResult.bBlockingHit)
+        return;
+
+    for (auto &Ally : Allies) {
+        Ally->MoveToTargetLocation(TargetLocation);
     }
 }
+
 void AMonoGrindingPlayer::SumonAlly() {
     UE_LOG(LogTemp, Warning, TEXT("Clicked Summon Ally"));
 
@@ -157,7 +153,7 @@ void AMonoGrindingPlayer::SumonAlly() {
 }
 
 void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position) {
-    if (GetWorld() == nullptr)
+    if (!GetWorld())
         return;
 
     FActorSpawnParameters SpawnParams;
