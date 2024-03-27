@@ -124,7 +124,7 @@ void AMonoGrindingPlayer::MoveUnits() {
     if (!HitResult.bBlockingHit)
         return;
 
-    for (auto &Ally : Allies) {
+    for (auto &Ally : Units) {
         Ally->MoveToTargetLocation(TargetLocation);
     }
 }
@@ -147,13 +147,10 @@ void AMonoGrindingPlayer::SummonOrEnlistUnit() {
     UEnemyComponent *HitEnemy = HitActor->GetComponentByClass<UEnemyComponent>();
 
     if (HitEnemy) {
-        HitEnemy->Disable();
-        UUnitComponent *UnitComponent =
-            HitEnemy->CreateDefaultSubobject<UUnitComponent>(TEXT("UnitComponent"));
-        Enlist(UnitComponent);
-    } else {
-        CreateAllyAtPosition(TargetLocation);
+        HitActor->Destroy();
     }
+
+    CreateAllyAtPosition(TargetLocation);
 }
 
 void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position) {
@@ -173,22 +170,25 @@ void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position) {
     FRotator SpawnRotation = FRotator::ZeroRotator;
 
     // Criar a instância do aliado
-    if (AllyBlueprint == nullptr) {
+    if (!AllyBlueprint) {
         UE_LOG(LogTemp, Warning, TEXT("AllyBlueprint is nullptr!"));
         return;
     }
 
-    AActor *NewUnit =
+    AActor *UnitActor =
         GetWorld()->SpawnActor<AActor>(AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
 
-    if (NewUnit) {
-        UUnitComponent *UnitComponent = NewUnit->GetComponentByClass<UUnitComponent>();
-        Enlist(UnitComponent);
+    if (!UnitActor)
+        return;
+
+    UUnitComponent *Unit = UnitActor->GetComponentByClass<UUnitComponent>();
+    if (Unit) {
+        Enlist(Unit);
     }
 }
 
 void AMonoGrindingPlayer::Enlist(UUnitComponent *Unit) {
-    Unit->Enlist(GetOwner());
+    Unit->Enlist(this);
     Cast<APawn>(Unit->GetOwner())->SpawnDefaultController();
-    Allies.Add(Unit);
+    Units.Add(Unit);
 }

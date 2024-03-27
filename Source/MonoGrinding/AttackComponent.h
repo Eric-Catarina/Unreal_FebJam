@@ -8,7 +8,7 @@
 
 #include "AttackComponent.generated.h"
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = ("MonoGrinding"), meta = (BlueprintSpawnableComponent))
 
 class MONOGRINDING_API UAttackComponent : public UActorComponent {
     GENERATED_BODY()

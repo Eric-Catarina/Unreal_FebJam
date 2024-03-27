@@ -9,39 +9,42 @@
 #include "GameFramework/SpringArmComponent.h"
 
 UEnemyComponent::UEnemyComponent() {
-    // OwnerPawn = Cast<APawn>(GetOwner());
-    // HealthComponent = GetOwner()->GetComponentByClass<UHealthComponent>();
-    // CharacterMovementComponent = Cast<ACharacter>(GetOwner())->GetCharacterMovement();
-    // CharacterMovementComponent->MaxWalkSpeed = 250.f;
-    // CharacterMovementComponent->MinAnalogWalkSpeed = 10.f;
-    // CharacterMovementComponent->BrakingDecelerationWalking = 1000.f;
-    // CharacterMovementComponent->BrakingDecelerationFalling = 750.0f;
-    //
-    // // Cria o componente. Parece o Instantiate da Unity
-    // PawnSensingComponent =
-    //     GetOwner()->CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
-    //
-    // // Esse componente tem um evento chamado OnSeePawn que é chamado quando o
-    // // inimigo vê o jogador Adiciona um método para ser chamado quando o evento
-    // // OnSeePawn é chamado
-    // PawnSensingComponent->OnSeePawn.AddDynamic(this, &UEnemyComponent::PursuitPawn);
-    // HealthComponent->OnDeath.AddDynamic(this, &UEnemyComponent::OnDeath);
+}
+
+void UEnemyComponent::BeginPlay() {
+    OwnerPawn = Cast<APawn>(GetOwner());
+    HealthComponent = GetOwner()->GetComponentByClass<UHealthComponent>();
+    CharacterMovementComponent = Cast<ACharacter>(GetOwner())->GetCharacterMovement();
+    CharacterMovementComponent->MaxWalkSpeed = 250.f;
+    CharacterMovementComponent->MinAnalogWalkSpeed = 10.f;
+    CharacterMovementComponent->BrakingDecelerationWalking = 1000.f;
+    CharacterMovementComponent->BrakingDecelerationFalling = 750.0f;
+
+    // Cria o componente. Parece o Instantiate da Unity
+    PawnSensingComponent = GetOwner()->GetComponentByClass<UPawnSensingComponent>();
+
+    // Esse componente tem um evento chamado OnSeePawn que é chamado quando o
+    // inimigo vê o jogador Adiciona um método para ser chamado quando o evento
+    // OnSeePawn é chamado
+    PawnSensingComponent->OnSeePawn.AddDynamic(this, &UEnemyComponent::PursuitPawn);
+    HealthComponent->OnDeath.AddDynamic(this, &UEnemyComponent::OnDeath);
 }
 
 void UEnemyComponent::OnComponentDestroyed(bool bDestroyingHierarchy) {
-    Disable();
-}
+    if (PawnSensingComponent) {
+        PawnSensingComponent->OnSeePawn.RemoveDynamic(this, &UEnemyComponent::PursuitPawn);
+    }
 
-void UEnemyComponent::PursuitPawn(APawn *TargetPawn) {
-    AAIController *AIController = Cast<AAIController>(OwnerPawn);
-    if (AIController && TargetPawn) {
-        AIController->MoveToActor(TargetPawn);
+    if (HealthComponent) {
+        HealthComponent->OnDeath.RemoveDynamic(this, &UEnemyComponent::OnDeath);
     }
 }
 
-void UEnemyComponent::Disable() {
-    PawnSensingComponent->OnSeePawn.RemoveDynamic(this, &UEnemyComponent::PursuitPawn);
-    HealthComponent->OnDeath.RemoveDynamic(this, &UEnemyComponent::OnDeath);
+void UEnemyComponent::PursuitPawn(APawn *TargetPawn) {
+    AAIController *AIController = Cast<AAIController>(OwnerPawn->GetController());
+    if (AIController && TargetPawn) {
+        AIController->MoveToActor(TargetPawn);
+    }
 }
 
 void UEnemyComponent::OnDeath() {

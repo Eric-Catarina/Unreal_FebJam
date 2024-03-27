@@ -92,7 +92,7 @@ public:
     }
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally")
-    TArray<UUnitComponent *> Allies;
+    TArray<UUnitComponent *> Units;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ally")
     TSubclassOf<AActor> AllyBlueprint;

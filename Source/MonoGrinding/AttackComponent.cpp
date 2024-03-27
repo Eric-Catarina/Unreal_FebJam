@@ -4,6 +4,7 @@
 
 #include "EnemyComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "MonoGrinding/MonoGrindingPlayer.h"
 #include "NiagaraFunctionLibrary.h"
 #include "UnitComponent.h"
 
@@ -39,53 +40,61 @@ void UAttackComponent::PerformAttack() {
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonoGrindingCharacter::StaticClass(),
                                           FoundActors); // Consider filtering by enemy class
 
+    UE_LOG(LogTemp, Warning, TEXT("A"));
     AActor *OwnerActor = GetOwner();
 
     UHealthComponent *HealthComp = OwnerActor->FindComponentByClass<UHealthComponent>();
     if (!HealthComp || HealthComp->CurrentHealth <= 0)
-        return; // Se não encontrar ou se a saúde for 0 ou menos, retorna
+        return;
+    UE_LOG(LogTemp, Warning, TEXT("B"));
 
     AMonoGrindingCharacter *OwnerCharacter = Cast<AMonoGrindingCharacter>(OwnerActor);
     if (!OwnerCharacter) {
         return;
     }
 
+    UE_LOG(LogTemp, Warning, TEXT("C"));
+
     AActor *NearestTarget = nullptr;
-    float NearestDist = AttackRange;
+    float NearestDistance = AttackRange;
 
-    for (AActor *Actor : FoundActors) {
-        UUnitComponent *UnitComponent = Actor->GetComponentByClass<UUnitComponent>();
-        if (UnitComponent) {
-            float Dist =
-                FVector::Distance(Actor->GetActorLocation(), GetOwner()->GetActorLocation());
-            if (Dist < NearestDist) {
-                NearestTarget = Actor;
-                NearestDist = Dist;
-            }
-        }
+    for (AActor *PossibleTargetActor : FoundActors) {
+        if (!PossibleTargetActor->GetComponentByClass<UUnitComponent>() &&
+            !PossibleTargetActor->IsA<AMonoGrindingPlayer>())
+            continue;
+
+        float Distance = FVector::Distance(PossibleTargetActor->GetActorLocation(),
+                                           GetOwner()->GetActorLocation());
+        if (Distance >= NearestDistance)
+            continue;
+
+        NearestTarget = PossibleTargetActor;
+        NearestDistance = Distance;
     }
 
-    if (NearestTarget) {
-        if (SlashVFX && SlashVFX2) {
-            // Calcula a rotação do VFX para apontar para o alvo
-            const FVector Direction =
-                (NearestTarget->GetActorLocation() - GetOwner()->GetActorLocation())
-                    .GetSafeNormal();
-            const FRotator VFXRotation = Direction.Rotation();
+    UE_LOG(LogTemp, Warning, TEXT("D"));
+    if (!NearestTarget)
+        return;
 
-            // Spawn do VFX na posição do alvo com a rotação calculada
-            UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                GetWorld(), SlashVFX, GetOwner()->GetActorLocation(), VFXRotation);
-            UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-                GetWorld(), SlashVFX2, NearestTarget->GetActorLocation(), VFXRotation);
-        }
+    UE_LOG(LogTemp, Warning, TEXT("E"));
+    if (SlashVFX && SlashVFX2) {
+        // Calcula a rotação do VFX para apontar para o alvo
+        const FVector Direction =
+            (NearestTarget->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal();
+        const FRotator VFXRotation = Direction.Rotation();
 
-        if (HitSound) {
-            UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetOwner()->GetActorLocation());
-        }
-
-        DealDamage(NearestTarget);
+        // Spawn do VFX na posição do alvo com a rotação calculada
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SlashVFX,
+                                                       GetOwner()->GetActorLocation(), VFXRotation);
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+            GetWorld(), SlashVFX2, NearestTarget->GetActorLocation(), VFXRotation);
     }
+
+    if (HitSound) {
+        UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetOwner()->GetActorLocation());
+    }
+
+    DealDamage(NearestTarget);
 }
 
 void UAttackComponent::DealDamage(AActor *Target) {

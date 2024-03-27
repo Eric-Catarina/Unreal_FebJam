@@ -10,7 +10,7 @@
 
 #include "UnitComponent.generated.h"
 
-UCLASS()
+UCLASS(ClassGroup = ("MonoGrinding"), meta = (BlueprintSpawnableComponent))
 
 class MONOGRINDING_API UUnitComponent : public UActorComponent {
     GENERATED_BODY()
@@ -18,14 +18,13 @@ class MONOGRINDING_API UUnitComponent : public UActorComponent {
 public:
     UUnitComponent();
 
+    void BeginPlay() override;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
     UHealthComponent *HealthComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     ACharacter *OwnerCharacter;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    AAIController *OwnerAiController;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Unit")
     AActor *Leader;

@@ -10,19 +10,16 @@
 
 #include "EnemyComponent.generated.h"
 
-/**
- *
- */
-UCLASS()
+UCLASS(ClassGroup = ("MonoGrinding"), meta = (BlueprintSpawnableComponent))
 
 class MONOGRINDING_API UEnemyComponent : public UActorComponent {
     GENERATED_BODY()
 public:
     UEnemyComponent();
-    void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
-    UFUNCTION()
-    void Disable();
+    void BeginPlay() override;
+
+    void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 protected:
     UPROPERTY()
@@ -40,5 +37,6 @@ protected:
     UFUNCTION()
     void PursuitPawn(APawn *TargetPawn);
 
+    UFUNCTION()
     void OnDeath();
 };
