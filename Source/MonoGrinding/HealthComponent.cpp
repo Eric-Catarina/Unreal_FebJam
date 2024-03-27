@@ -97,6 +97,7 @@ void UHealthComponent::Die() {
 
     IsDead = true;
     MovementComponent->DisableMovement();
+    OnDeath.Broadcast();
 
     if (DeathSound) {
         UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());

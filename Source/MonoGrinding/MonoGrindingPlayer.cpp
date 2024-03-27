@@ -4,12 +4,10 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
+#include "EnemyComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "MonoGrindingAlly.h"
-#include "MonoGrindingEnemy.h"
-#include "MonoGrindingUnit.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
 
@@ -27,8 +25,6 @@ AMonoGrindingPlayer::AMonoGrindingPlayer() {
     // Attach the camera to the end of the boom and let the boom adjust to match
     // the controller orientation
     FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
-    TeamID = 0;
 
     ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
     ObjectTypes.Add(
@@ -61,10 +57,10 @@ void AMonoGrindingPlayer::SetupPlayerInputComponent(UInputComponent *PlayerInput
     if (UEnhancedInputComponent *EnhancedInputComponent =
             Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
         EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this,
-                                           &AMonoGrindingPlayer::MoveAllies);
+                                           &AMonoGrindingPlayer::MoveUnits);
 
         EnhancedInputComponent->BindAction(SummonAllyAction, ETriggerEvent::Triggered, this,
-                                           &AMonoGrindingPlayer::SumonAlly);
+                                           &AMonoGrindingPlayer::SummonOrEnlistUnit);
 
         // Jumping
         EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this,
@@ -120,7 +116,7 @@ void AMonoGrindingPlayer::Look(const FInputActionValue &Value) {
     }
 }
 
-void AMonoGrindingPlayer::MoveAllies() {
+void AMonoGrindingPlayer::MoveUnits() {
     FHitResult HitResult;
     GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false,
                                                                     HitResult);
@@ -133,22 +129,30 @@ void AMonoGrindingPlayer::MoveAllies() {
     }
 }
 
-void AMonoGrindingPlayer::SumonAlly() {
+void AMonoGrindingPlayer::SummonOrEnlistUnit() {
     UE_LOG(LogTemp, Warning, TEXT("Clicked Summon Ally"));
 
     FHitResult HitResult;
     GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(ObjectTypes, false,
                                                                               HitResult);
     FVector TargetLocation = HitResult.ImpactPoint;
-    if (HitResult.bBlockingHit) {
-        AMonoGrindingUnit *HitUnit = Cast<AMonoGrindingUnit>(HitResult.GetActor());
-        if (HitUnit) {
-            bool ReviveSuccessful = HitUnit->TryReviveAsAlly();
-            if (ReviveSuccessful)
-                Allies.Add(HitUnit);
-        } else {
-            CreateAllyAtPosition(TargetLocation);
-        }
+    if (!HitResult.bBlockingHit)
+        return;
+
+    AActor *HitActor = HitResult.GetActor();
+
+    if (!HitActor)
+        return;
+
+    UEnemyComponent *HitEnemy = HitActor->GetComponentByClass<UEnemyComponent>();
+
+    if (HitEnemy) {
+        HitEnemy->Disable();
+        UUnitComponent *UnitComponent =
+            HitEnemy->CreateDefaultSubobject<UUnitComponent>(TEXT("UnitComponent"));
+        Enlist(UnitComponent);
+    } else {
+        CreateAllyAtPosition(TargetLocation);
     }
 }
 
@@ -173,13 +177,18 @@ void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position) {
         UE_LOG(LogTemp, Warning, TEXT("AllyBlueprint is nullptr!"));
         return;
     }
-    AMonoGrindingUnit *NewAlly = GetWorld()->SpawnActor<AMonoGrindingUnit>(
-        AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
 
-    NewAlly->TeamID = 0;
+    AActor *NewUnit =
+        GetWorld()->SpawnActor<AActor>(AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
 
-    if (NewAlly != nullptr) {
-        NewAlly->SpawnDefaultController();
-        Allies.Add(NewAlly);
+    if (NewUnit) {
+        UUnitComponent *UnitComponent = NewUnit->GetComponentByClass<UUnitComponent>();
+        Enlist(UnitComponent);
     }
+}
+
+void AMonoGrindingPlayer::Enlist(UUnitComponent *Unit) {
+    Unit->Enlist(GetOwner());
+    Cast<APawn>(Unit->GetOwner())->SpawnDefaultController();
+    Allies.Add(Unit);
 }

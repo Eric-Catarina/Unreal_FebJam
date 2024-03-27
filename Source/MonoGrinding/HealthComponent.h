@@ -11,7 +11,10 @@
 
 #include "HealthComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+
 class MONOGRINDING_API UHealthComponent : public UActorComponent {
     GENERATED_BODY()
 
@@ -58,6 +61,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
     float CurrentHealth;
+
+    UPROPERTY(BlueprintAssignable, Category = "Health")
+    FOnDeath OnDeath;
 
     UPROPERTY(EditAnywhere, Category = "Animation")
     UAnimMontage *TPoseMontage;

@@ -9,6 +9,7 @@
 #include "AttackComponent.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+
 class MONOGRINDING_API UAttackComponent : public UActorComponent {
     GENERATED_BODY()
 
@@ -44,12 +45,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
     USoundBase *HitSound;
 
-    int32 TeamID; // 0
-
     // Time handle for managing attack interval.
     FTimerHandle TimerHandle_Attack;
 
-    virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+    virtual void TickComponent(float DeltaTime,
+                               ELevelTick TickType,
                                FActorComponentTickFunction *ThisTickFunction) override;
 
     void PerformAttack();

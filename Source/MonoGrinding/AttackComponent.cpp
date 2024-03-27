@@ -2,9 +2,11 @@
 
 #include "AttackComponent.h"
 
+#include "EnemyComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "MonoGrindingEnemy.h"
 #include "NiagaraFunctionLibrary.h"
+#include "UnitComponent.h"
+
 // Sets default values for this component's properties
 UAttackComponent::UAttackComponent() {
     // Set this component to be initialized when the game starts, and to be ticked
@@ -24,7 +26,8 @@ void UAttackComponent::BeginPlay() {
 }
 
 // Called every frame
-void UAttackComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+void UAttackComponent::TickComponent(float DeltaTime,
+                                     ELevelTick TickType,
                                      FActorComponentTickFunction *ThisTickFunction) {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -47,13 +50,12 @@ void UAttackComponent::PerformAttack() {
         return;
     }
 
-    TeamID = OwnerCharacter->TeamID;
     AActor *NearestTarget = nullptr;
     float NearestDist = AttackRange;
 
     for (AActor *Actor : FoundActors) {
-        AMonoGrindingCharacter *TargetCharacter = Cast<AMonoGrindingCharacter>(Actor);
-        if (TargetCharacter && TargetCharacter->TeamID != TeamID) {
+        UUnitComponent *UnitComponent = Actor->GetComponentByClass<UUnitComponent>();
+        if (UnitComponent) {
             float Dist =
                 FVector::Distance(Actor->GetActorLocation(), GetOwner()->GetActorLocation());
             if (Dist < NearestDist) {

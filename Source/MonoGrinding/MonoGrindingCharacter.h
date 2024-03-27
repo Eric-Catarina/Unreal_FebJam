@@ -18,6 +18,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config = Game)
+
 class AMonoGrindingCharacter : public ACharacter {
     GENERATED_BODY()
 
@@ -37,7 +38,4 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
     UAttackComponent *AttackComponent;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
-    int32 TeamID;
 };
