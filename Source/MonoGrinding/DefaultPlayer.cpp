@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MonoGrindingPlayer.h"
+#include "DefaultPlayer.h"
 
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
@@ -11,7 +11,7 @@
 
 class UEnhancedInputLocalPlayerSubsystem;
 
-AMonoGrindingPlayer::AMonoGrindingPlayer() {
+ADefaultPlayer::ADefaultPlayer() {
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
     CameraBoom->SetupAttachment(RootComponent);
     CameraBoom->TargetArmLength =
@@ -35,7 +35,7 @@ AMonoGrindingPlayer::AMonoGrindingPlayer() {
     // ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
-void AMonoGrindingPlayer::BeginPlay() {
+void ADefaultPlayer::BeginPlay() {
     // Call the base class
     Super::BeginPlay();
 
@@ -52,15 +52,15 @@ void AMonoGrindingPlayer::BeginPlay() {
     }
 }
 
-void AMonoGrindingPlayer::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) {
+void ADefaultPlayer::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) {
     // Set up action bindings
     if (UEnhancedInputComponent *EnhancedInputComponent =
             Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
         EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this,
-                                           &AMonoGrindingPlayer::MoveUnits);
+                                           &ADefaultPlayer::MoveUnits);
 
         EnhancedInputComponent->BindAction(SummonAllyAction, ETriggerEvent::Triggered, this,
-                                           &AMonoGrindingPlayer::SummonOrEnlistUnit);
+                                           &ADefaultPlayer::SummonOrEnlistUnit);
 
         // Jumping
         EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this,
@@ -70,11 +70,11 @@ void AMonoGrindingPlayer::SetupPlayerInputComponent(UInputComponent *PlayerInput
 
         // Moving
         EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this,
-                                           &AMonoGrindingPlayer::Move);
+                                           &ADefaultPlayer::Move);
 
         // Looking
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
-                                           &AMonoGrindingPlayer::Look);
+                                           &ADefaultPlayer::Look);
     } else {
         UE_LOG(LogTemplateCharacter, Error,
                TEXT("'%s' Failed to find an Enhanced Input component! This template "
@@ -84,7 +84,7 @@ void AMonoGrindingPlayer::SetupPlayerInputComponent(UInputComponent *PlayerInput
     }
 }
 
-void AMonoGrindingPlayer::Move(const FInputActionValue &Value) {
+void ADefaultPlayer::Move(const FInputActionValue &Value) {
     // input is a Vector2D
     FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -105,7 +105,7 @@ void AMonoGrindingPlayer::Move(const FInputActionValue &Value) {
     }
 }
 
-void AMonoGrindingPlayer::Look(const FInputActionValue &Value) {
+void ADefaultPlayer::Look(const FInputActionValue &Value) {
     // input is a Vector2D
     FVector2D LookAxisVector = Value.Get<FVector2D>();
 
@@ -116,7 +116,7 @@ void AMonoGrindingPlayer::Look(const FInputActionValue &Value) {
     }
 }
 
-void AMonoGrindingPlayer::MoveUnits() {
+void ADefaultPlayer::MoveUnits() {
     FHitResult HitResult;
     GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false,
                                                                     HitResult);
@@ -129,7 +129,7 @@ void AMonoGrindingPlayer::MoveUnits() {
     }
 }
 
-void AMonoGrindingPlayer::SummonOrEnlistUnit() {
+void ADefaultPlayer::SummonOrEnlistUnit() {
     UE_LOG(LogTemp, Warning, TEXT("Clicked Summon Ally"));
 
     FHitResult HitResult;
@@ -153,7 +153,7 @@ void AMonoGrindingPlayer::SummonOrEnlistUnit() {
     CreateAllyAtPosition(TargetLocation);
 }
 
-void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position) {
+void ADefaultPlayer::CreateAllyAtPosition(FVector Position) {
     if (!GetWorld())
         return;
 
@@ -187,7 +187,7 @@ void AMonoGrindingPlayer::CreateAllyAtPosition(FVector Position) {
     }
 }
 
-void AMonoGrindingPlayer::Enlist(UUnitComponent *Unit) {
+void ADefaultPlayer::Enlist(UUnitComponent *Unit) {
     Unit->Enlist(this);
     Cast<APawn>(Unit->GetOwner())->SpawnDefaultController();
     Units.Add(Unit);

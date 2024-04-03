@@ -6,11 +6,11 @@
 #include "MonoGrindingCharacter.h"
 #include "UnitComponent.h"
 
-#include "MonoGrindingPlayer.generated.h"
+#include "DefaultPlayer.generated.h"
 
 UCLASS()
 
-class MONOGRINDING_API AMonoGrindingPlayer : public AMonoGrindingCharacter {
+class MONOGRINDING_API ADefaultPlayer : public AMonoGrindingCharacter {
     GENERATED_BODY()
 protected:
     /** Called for movement input */
@@ -98,7 +98,7 @@ public:
     TSubclassOf<AActor> AllyBlueprint;
 
     TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-    AMonoGrindingPlayer();
+    ADefaultPlayer();
 
     void BeginPlay();
     void Enlist(UUnitComponent *Unit);

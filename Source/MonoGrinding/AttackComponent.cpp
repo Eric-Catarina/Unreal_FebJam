@@ -4,7 +4,7 @@
 
 #include "EnemyComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "MonoGrinding/MonoGrindingPlayer.h"
+#include "MonoGrinding/DefaultPlayer.h"
 #include "NiagaraFunctionLibrary.h"
 #include "UnitComponent.h"
 
@@ -60,7 +60,7 @@ void UAttackComponent::PerformAttack() {
 
     for (AActor *PossibleTargetActor : FoundActors) {
         if (!PossibleTargetActor->GetComponentByClass<UUnitComponent>() &&
-            !PossibleTargetActor->IsA<AMonoGrindingPlayer>())
+            !PossibleTargetActor->IsA<ADefaultPlayer>())
             continue;
 
         float Distance = FVector::Distance(PossibleTargetActor->GetActorLocation(),
