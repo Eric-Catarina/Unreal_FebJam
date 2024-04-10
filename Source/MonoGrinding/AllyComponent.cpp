@@ -5,7 +5,6 @@
 #include "GameFramework/Character.h"
 
 UAllyComponent::UAllyComponent() {
-    OwnerCharacter = Cast<ACharacter>(GetOwner());
 }
 
 void UAllyComponent::BeginPlay() {
@@ -33,9 +32,14 @@ void UAllyComponent::Enlist(AActor *LeaderP) {
 void UAllyComponent::MoveTo(const FVector &TargetLocation) {
     UE_LOG(LogTemp, Warning, TEXT("Trying to move to location %s"), *TargetLocation.ToString());
 
+    OwnerCharacter = Cast<ACharacter>(GetOwner());
     AAIController *OwnerAiController = Cast<AAIController>(OwnerCharacter->GetController());
 
-    if (OwnerAiController) {
-        OwnerAiController->MoveToLocation(TargetLocation);
+    if (!OwnerAiController) {
+        UE_LOG(LogTemp, Warning, TEXT("AI Controller not properly configured, not moving"));
+        return;
     }
+
+    UE_LOG(LogTemp, Warning, TEXT("AI Controller all good, moving"));
+    OwnerAiController->MoveToLocation(TargetLocation);
 }

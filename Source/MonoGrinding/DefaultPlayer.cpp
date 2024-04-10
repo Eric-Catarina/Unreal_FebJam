@@ -54,35 +54,32 @@ void ADefaultPlayer::BeginPlay() {
 }
 
 void ADefaultPlayer::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) {
-    // Set up action bindings
-    if (UEnhancedInputComponent *EnhancedInputComponent =
-            Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-        EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this,
-                                           &ADefaultPlayer::MoveUnits);
+    UEnhancedInputComponent *EnhancedInputComponent =
+        Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
-        EnhancedInputComponent->BindAction(SummonAllyAction, ETriggerEvent::Triggered, this,
-                                           &ADefaultPlayer::SummonOrEnlistUnit);
-
-        // Jumping
-        EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this,
-                                           &ACharacter::Jump);
-        EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this,
-                                           &ACharacter::StopJumping);
-
-        // Moving
-        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this,
-                                           &ADefaultPlayer::Move);
-
-        // Looking
-        EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
-                                           &ADefaultPlayer::Look);
-    } else {
+    if (!EnhancedInputComponent) {
         UE_LOG(LogTemplateCharacter, Error,
                TEXT("'%s' Failed to find an Enhanced Input component! This template "
                     "is built to use the Enhanced Input system. If you intend to use "
                     "the legacy system, then you will need to update this C++ file."),
                *GetNameSafe(this));
     }
+
+    EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this,
+                                       &ADefaultPlayer::MoveAllies);
+
+    EnhancedInputComponent->BindAction(SummonAllyAction, ETriggerEvent::Triggered, this,
+                                       &ADefaultPlayer::SummonOrEnlistUnit);
+
+    EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+    EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this,
+                                       &ACharacter::StopJumping);
+
+    EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this,
+                                       &ADefaultPlayer::Move);
+
+    EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
+                                       &ADefaultPlayer::Look);
 }
 
 void ADefaultPlayer::Move(const FInputActionValue &Value) {
@@ -117,13 +114,17 @@ void ADefaultPlayer::Look(const FInputActionValue &Value) {
     }
 }
 
-void ADefaultPlayer::MoveUnits() {
+void ADefaultPlayer::MoveAllies() {
     FHitResult HitResult;
     GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false,
                                                                     HitResult);
     FVector TargetLocation = HitResult.Location;
+    UE_LOG(LogTemp, Warning, TEXT("Trying to Move Allies to %s"), *TargetLocation.ToString());
+
     if (!HitResult.bBlockingHit)
         return;
+
+    UE_LOG(LogTemp, Warning, TEXT("Valid TargetLocation, Moving Allies"));
 
     for (auto &Ally : Allies) {
         Ally->MoveTo(TargetLocation);
@@ -162,7 +163,7 @@ void ADefaultPlayer::CreateAllyAtPosition(FVector Position) {
     SpawnParams.Owner = this;
     SpawnParams.Instigator = GetInstigator();
     SpawnParams.SpawnCollisionHandlingOverride =
-        ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
     // Ajustar a posição baseada na posição atual do jogador
     FVector SpawnLocation = Position;
