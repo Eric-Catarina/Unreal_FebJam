@@ -66,8 +66,8 @@
               ];
 
               scripts = {
-                de-open.exec = ''
-                  nvidia-offload steam-run ${ueEditorBinPath} ${uprojectPath} &
+                openue.exec = ''
+                  nvidia-offload steam-run ${ueEditorBinPath} ${uprojectPath}
                 '';
 
                 de-use_nix_bins.exec = ''
@@ -106,7 +106,7 @@
                   de-use_ue_bins
                 '';
 
-                de-gen_full.exec = ''
+                gen.exec = ''
                   running_msg="C++ Gen Running..."
                   completed_msg="C++ Gen Completed!"
 

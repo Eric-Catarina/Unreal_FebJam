@@ -53,7 +53,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Health")
     void Revive();
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
     UCharacterMovementComponent *MovementComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")

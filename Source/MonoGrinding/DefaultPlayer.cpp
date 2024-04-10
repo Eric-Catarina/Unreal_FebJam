@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "MonoGrinding/AllyComponent.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
 
@@ -124,8 +125,8 @@ void ADefaultPlayer::MoveUnits() {
     if (!HitResult.bBlockingHit)
         return;
 
-    for (auto &Ally : Units) {
-        Ally->MoveToTargetLocation(TargetLocation);
+    for (auto &Ally : Allies) {
+        Ally->MoveTo(TargetLocation);
     }
 }
 
@@ -181,14 +182,14 @@ void ADefaultPlayer::CreateAllyAtPosition(FVector Position) {
     if (!UnitActor)
         return;
 
-    UUnitComponent *Unit = UnitActor->GetComponentByClass<UUnitComponent>();
-    if (Unit) {
-        Enlist(Unit);
+    UAllyComponent *Ally = UnitActor->GetComponentByClass<UAllyComponent>();
+    if (Ally) {
+        Enlist(Ally);
     }
 }
 
-void ADefaultPlayer::Enlist(UUnitComponent *Unit) {
-    Unit->Enlist(this);
-    Cast<APawn>(Unit->GetOwner())->SpawnDefaultController();
-    Units.Add(Unit);
+void ADefaultPlayer::Enlist(UAllyComponent *Ally) {
+    Ally->Enlist(this);
+    Cast<APawn>(Ally->GetOwner())->SpawnDefaultController();
+    Allies.Add(Ally);
 }

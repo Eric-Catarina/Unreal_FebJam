@@ -10,33 +10,41 @@
 
 #include "EnemyComponent.generated.h"
 
-UCLASS(ClassGroup = ("MonoGrinding"), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
 class MONOGRINDING_API UEnemyComponent : public UActorComponent {
     GENERATED_BODY()
+
 public:
+    const std::string EnemySpawnerCategory = "Enemy";
+
     UEnemyComponent();
 
     void BeginPlay() override;
 
-    void OnComponentDestroyed(bool bDestroyingHierarchy) override;
+    UFUNCTION(BlueprintCallable, Category = Category)
+    void Enable();
 
-protected:
-    UPROPERTY()
-    APawn *OwnerPawn;
+    UFUNCTION(BlueprintCallable, Category = Category)
+    void Disable();
 
-    UPROPERTY()
-    UPawnSensingComponent *PawnSensingComponent;
+    UFUNCTION()
+    void StartPursuit();
+
+    UFUNCTION()
+    void Pursuit(AActor *TargetActor);
+
+    UFUNCTION()
+    void OnDeath();
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Category)
+    bool Enabled;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Category)
+    AMonoGrindingCharacter *OwnerCustomCharacter;
 
     UPROPERTY()
     UCharacterMovementComponent *CharacterMovementComponent;
 
-    UPROPERTY()
-    UHealthComponent *HealthComponent;
-
-    UFUNCTION()
-    void PursuitPawn(APawn *TargetPawn);
-
-    UFUNCTION()
-    void OnDeath();
+    void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 };

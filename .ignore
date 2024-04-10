@@ -1,12 +1,10 @@
 /.git
 /Content
-/Intermediate
-/Saved
 /DerivedDataCache
 /.direnv
 /.devenv
 /.cache
 /.vscode
 /devenv-custom
-/Plugins/UE5_Plugin-EditorUIScale/.git
-/Plugins/UE5_Plugin-EditorUIScale/Intermediate
+/Intermediate
+/Saved

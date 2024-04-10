@@ -17,7 +17,7 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
-UCLASS(config = Game)
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
 class AMonoGrindingCharacter : public ACharacter {
     GENERATED_BODY()
@@ -32,6 +32,9 @@ public:
     float GetHealthPercent() const;
     virtual void Die();
     void Revive();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+    ETeamType Team;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
     UHealthComponent *HealthComponent;

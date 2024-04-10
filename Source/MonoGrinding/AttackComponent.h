@@ -8,17 +8,18 @@
 
 #include "AttackComponent.generated.h"
 
-UCLASS(ClassGroup = ("MonoGrinding"), meta = (BlueprintSpawnableComponent))
+UENUM(BlueprintType)
+enum class ETeamType : uint8 {
+    Enemy UMETA(DisplayName = "Enemy"),
+    Ally UMETA(DisplayName = "Ally"),
+};
+
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
 class MONOGRINDING_API UAttackComponent : public UActorComponent {
     GENERATED_BODY()
 
-protected:
-    // Called when the game starts
-    virtual void BeginPlay() override;
-
 public:
-    // Sets default values for this component's properties
     UAttackComponent();
 
     UPROPERTY(EditAnywhere, Category = "Attack")
@@ -45,6 +46,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
     USoundBase *HitSound;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+    ETeamType TargetType;
+
     // Time handle for managing attack interval.
     FTimerHandle TimerHandle_Attack;
 
@@ -53,6 +57,9 @@ public:
                                FActorComponentTickFunction *ThisTickFunction) override;
 
     void PerformAttack();
+
+protected:
+    virtual void BeginPlay() override;
 
 private:
     void DealDamage(AActor *Target);

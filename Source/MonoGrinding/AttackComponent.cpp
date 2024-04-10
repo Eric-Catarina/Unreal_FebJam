@@ -6,7 +6,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "MonoGrinding/DefaultPlayer.h"
 #include "NiagaraFunctionLibrary.h"
-#include "UnitComponent.h"
 
 // Sets default values for this component's properties
 UAttackComponent::UAttackComponent() {
@@ -40,28 +39,24 @@ void UAttackComponent::PerformAttack() {
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonoGrindingCharacter::StaticClass(),
                                           FoundActors); // Consider filtering by enemy class
 
-    UE_LOG(LogTemp, Warning, TEXT("A"));
-    AActor *OwnerActor = GetOwner();
+    UHealthComponent *HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
 
-    UHealthComponent *HealthComp = OwnerActor->FindComponentByClass<UHealthComponent>();
-    if (!HealthComp || HealthComp->CurrentHealth <= 0)
+    if (!HealthComponent || HealthComponent->CurrentHealth <= 0)
         return;
-    UE_LOG(LogTemp, Warning, TEXT("B"));
-
-    AMonoGrindingCharacter *OwnerCharacter = Cast<AMonoGrindingCharacter>(OwnerActor);
-    if (!OwnerCharacter) {
-        return;
-    }
-
-    UE_LOG(LogTemp, Warning, TEXT("C"));
 
     AActor *NearestTarget = nullptr;
     float NearestDistance = AttackRange;
 
     for (AActor *PossibleTargetActor : FoundActors) {
-        if (!PossibleTargetActor->GetComponentByClass<UUnitComponent>() &&
-            !PossibleTargetActor->IsA<ADefaultPlayer>())
+        AMonoGrindingCharacter *PossibleTargetCharacter =
+            Cast<AMonoGrindingCharacter>(PossibleTargetActor);
+
+        if (!PossibleTargetCharacter)
             continue;
+
+        if (PossibleTargetCharacter == GetOwner() || TargetType == PossibleTargetCharacter->Team) {
+            continue;
+        }
 
         float Distance = FVector::Distance(PossibleTargetActor->GetActorLocation(),
                                            GetOwner()->GetActorLocation());
@@ -72,11 +67,9 @@ void UAttackComponent::PerformAttack() {
         NearestDistance = Distance;
     }
 
-    UE_LOG(LogTemp, Warning, TEXT("D"));
     if (!NearestTarget)
         return;
 
-    UE_LOG(LogTemp, Warning, TEXT("E"));
     if (SlashVFX && SlashVFX2) {
         // Calcula a rotação do VFX para apontar para o alvo
         const FVector Direction =
@@ -98,7 +91,8 @@ void UAttackComponent::PerformAttack() {
 }
 
 void UAttackComponent::DealDamage(AActor *Target) {
-    UE_LOG(LogTemp, Warning, TEXT("%f was dealed to %s"), AttackDamage, *Target->GetName());
+    UE_LOG(LogTemp, Warning, TEXT("%f was dealed from %s to %s"), AttackDamage,
+           *GetOwner()->GetName(), *Target->GetName());
     UGameplayStatics::ApplyDamage(Target, AttackDamage, GetOwner()->GetInstigatorController(),
                                   GetOwner(), nullptr);
 }

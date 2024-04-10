@@ -37,8 +37,6 @@ AMonoGrindingCharacter::AMonoGrindingCharacter() {
     GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
     HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-    HealthComponent->MovementComponent = GetCharacterMovement();
-
     AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));
 }
 

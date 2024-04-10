@@ -3,15 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MonoGrinding/AllyComponent.h"
 #include "MonoGrindingCharacter.h"
-#include "UnitComponent.h"
 
 #include "DefaultPlayer.generated.h"
 
-UCLASS()
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
 class MONOGRINDING_API ADefaultPlayer : public AMonoGrindingCharacter {
     GENERATED_BODY()
+
 protected:
     /** Called for movement input */
     void Move(const FInputActionValue &Value);
@@ -92,7 +93,7 @@ public:
     }
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally")
-    TArray<UUnitComponent *> Units;
+    TArray<UAllyComponent *> Allies;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ally")
     TSubclassOf<AActor> AllyBlueprint;
@@ -101,5 +102,5 @@ public:
     ADefaultPlayer();
 
     void BeginPlay();
-    void Enlist(UUnitComponent *Unit);
+    void Enlist(UAllyComponent *Ally);
 };

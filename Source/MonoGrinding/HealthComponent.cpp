@@ -2,6 +2,7 @@
 
 #include "HealthComponent.h"
 
+#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/OutputDeviceNull.h"
@@ -21,9 +22,18 @@ UHealthComponent::UHealthComponent() {
 
 void UHealthComponent::BeginPlay() {
     Super::BeginPlay();
+    UE_LOG(LogTemp, Warning, TEXT("UHealthComponent Begin Play"));
 
-    HealthBarWidget =
-        Cast<UWidgetComponent>(GetOwner()->GetComponentByClass(UWidgetComponent::StaticClass()));
+    MovementComponent =
+        Cast<ACharacter>(GetOwner())->GetComponentByClass<UCharacterMovementComponent>();
+    if (MovementComponent) {
+        UE_LOG(LogTemp, Warning, TEXT("Movement Component: %s"), *MovementComponent->GetName());
+    }
+
+    HealthBarWidget = GetOwner()->GetComponentByClass<UWidgetComponent>();
+    if (HealthBarWidget) {
+        UE_LOG(LogTemp, Warning, TEXT("HealthBarWidget: %s"), *HealthBarWidget->GetName());
+    }
 }
 
 // Called every frame
@@ -31,8 +41,6 @@ void UHealthComponent::TickComponent(float DeltaTime,
                                      ELevelTick TickType,
                                      FActorComponentTickFunction *ThisTickFunction) {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-    // ...
 }
 
 void UHealthComponent::TakeDamage(float DamageAmount) {
@@ -61,6 +69,11 @@ void UHealthComponent::SetCurrentHealth(float NewHealth) {
     float HealthPercent = GetHealthPercent();
     FString Command = FString::Printf(TEXT("UpdateHealthBar %f"), HealthPercent);
     FOutputDeviceNull Ar;
+
+    if (!HealthBarWidget || !HealthBarWidget->GetWidget()) {
+        UE_LOG(LogTemp, Warning, TEXT("No HealthBarWidget found on %s"), *GetOwner()->GetName());
+        return;
+    }
 
     HealthBarWidget->GetWidget()->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 }
@@ -96,7 +109,11 @@ void UHealthComponent::Die() {
     // }
 
     IsDead = true;
-    MovementComponent->DisableMovement();
+
+    if (MovementComponent) {
+        MovementComponent->DisableMovement();
+    }
+
     OnDeath.Broadcast();
 
     if (DeathSound) {
