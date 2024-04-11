@@ -1,5 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-// EnemyComponent.cpp
 
 #include "EnemyComponent.h"
 #include "AIController.h"
@@ -13,11 +12,13 @@
 #include "MonoGrinding/MonoGrindingCharacter.h"
 
 UEnemyComponent::UEnemyComponent() {
-    OwnerCustomCharacter = Cast<AMonoGrindingCharacter>(GetOwner());
 }
 
 void UEnemyComponent::BeginPlay() {
     Super::BeginPlay();
+    OwnerCustomCharacter = Cast<AMonoGrindingCharacter>(GetOwner());
+    HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
+    SkeletalMeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
 
     if (OwnerCustomCharacter && OwnerCustomCharacter->Team == ETeamType::Enemy) {
         Enable();
@@ -32,16 +33,18 @@ void UEnemyComponent::Enable() {
     Enabled = true;
     StartPursuit();
 
-    UHealthComponent *HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
     if (HealthComponent) {
         HealthComponent->OnDeath.AddDynamic(this, &UEnemyComponent::OnDeath);
+    }
+
+    if (SkeletalMeshComponent && EnemyMaterial) {
+        SkeletalMeshComponent->SetMaterial(0, EnemyMaterial);
     }
 }
 
 void UEnemyComponent::Disable() {
     Enabled = false;
 
-    UHealthComponent *HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
     if (HealthComponent) {
         HealthComponent->OnDeath.RemoveDynamic(this, &UEnemyComponent::OnDeath);
     }

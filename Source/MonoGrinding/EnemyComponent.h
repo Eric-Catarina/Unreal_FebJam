@@ -1,10 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-// EnemyComponent.cpp
 
 #pragma once
 
 #include "Components/ActorComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "CoreMinimal.h"
+#include "MonoGrinding/HealthComponent.h"
 #include "MonoGrindingCharacter.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -16,34 +17,41 @@ class MONOGRINDING_API UEnemyComponent : public UActorComponent {
     GENERATED_BODY()
 
 public:
-    const std::string EnemySpawnerCategory = "Enemy";
-
     UEnemyComponent();
 
-    void BeginPlay() override;
+    virtual void BeginPlay() override;
 
-    UFUNCTION(BlueprintCallable, Category = Category)
+    UFUNCTION(BlueprintCallable, Category = "Enemy")
     void Enable();
 
-    UFUNCTION(BlueprintCallable, Category = Category)
+    UFUNCTION(BlueprintCallable, Category = "Enemy")
     void Disable();
 
-    UFUNCTION()
+    UFUNCTION(Category = "Enemy")
     void StartPursuit();
 
-    UFUNCTION()
+    UFUNCTION(Category = "Enemy")
     void Pursuit(AActor *TargetActor);
 
-    UFUNCTION()
+    UFUNCTION(Category = "Enemy")
     void OnDeath();
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Category)
-    bool Enabled;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+    UMaterialInstance *EnemyMaterial;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Category)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
+    UHealthComponent *HealthComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
+    USkeletalMeshComponent *SkeletalMeshComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
     AMonoGrindingCharacter *OwnerCustomCharacter;
 
-    UPROPERTY()
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
+    bool Enabled;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
     UCharacterMovementComponent *CharacterMovementComponent;
 
     void OnComponentDestroyed(bool bDestroyingHierarchy) override;

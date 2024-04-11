@@ -3,7 +3,9 @@
 #pragma once
 
 #include "Components/ActorComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "CoreMinimal.h"
+#include "Materials/MaterialInstance.h"
 #include "MonoGrinding/HealthComponent.h"
 #include "AllyComponent.generated.h"
 
@@ -13,32 +15,36 @@ class MONOGRINDING_API UAllyComponent : public UActorComponent {
     GENERATED_BODY()
 
 public:
-    const std::string Category = "Ally";
-
     UAllyComponent();
 
-    UFUNCTION(BlueprintCallable, Category = Category)
+    UFUNCTION(BlueprintCallable, Category = "Ally")
     void Enable();
 
-    UFUNCTION(BlueprintCallable, Category = Category)
+    UFUNCTION(BlueprintCallable, Category = "Ally")
     void Disable();
 
-    UFUNCTION(BlueprintCallable, Category = Category)
+    UFUNCTION(BlueprintCallable, Category = "Ally")
     void Enlist(AActor *LeaderP);
 
-    UFUNCTION(BlueprintCallable, Category = Category)
+    UFUNCTION(BlueprintCallable, Category = "Ally")
     void MoveTo(const FVector &TargetLocation);
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Category)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ally")
+    UMaterialInstance *AllyMaterial;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally|Debug")
+    USkeletalMeshComponent *SkeletalMeshComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally|Debug")
     AActor *Leader;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Category)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally|Debug")
     ACharacter *OwnerCharacter;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Category)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally|Debug")
     UHealthComponent *HealthComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Category)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally|Debug")
     bool Enabled;
 
 protected:

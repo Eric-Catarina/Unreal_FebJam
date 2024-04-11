@@ -2,7 +2,10 @@
 
 #include "AllyComponent.h"
 #include "AIController.h"
+#include "AttackComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Character.h"
+#include "MonoGrinding/MonoGrindingCharacter.h"
 
 UAllyComponent::UAllyComponent() {
 }
@@ -10,10 +13,20 @@ UAllyComponent::UAllyComponent() {
 void UAllyComponent::BeginPlay() {
     Super::BeginPlay();
     HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
+    SkeletalMeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
+    AMonoGrindingCharacter *OwnerCustomCharacter = Cast<AMonoGrindingCharacter>(GetOwner());
+
+    if (OwnerCustomCharacter && OwnerCustomCharacter->Team == ETeamType::Ally) {
+        Enable();
+    }
 }
 
 void UAllyComponent::Enable() {
     Enabled = true;
+
+    if (AllyMaterial) {
+        SkeletalMeshComponent->SetMaterial(0, AllyMaterial);
+    }
 }
 
 void UAllyComponent::Disable() {
