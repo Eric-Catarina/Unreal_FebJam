@@ -12,17 +12,17 @@ UAllyComponent::UAllyComponent() {
 
 void UAllyComponent::BeginPlay() {
     Super::BeginPlay();
+    AttackComponent = GetOwner()->FindComponentByClass<UAttackComponent>();
     HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
     SkeletalMeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
-    AMonoGrindingCharacter *OwnerCustomCharacter = Cast<AMonoGrindingCharacter>(GetOwner());
-
-    if (OwnerCustomCharacter && OwnerCustomCharacter->Team == ETeamType::Ally) {
-        Enable();
-    }
 }
 
 void UAllyComponent::Enable() {
     Enabled = true;
+
+    if (AttackComponent) {
+        AttackComponent->TargetType = ETeamType::Enemy;
+    }
 
     if (AllyMaterial) {
         SkeletalMeshComponent->SetMaterial(0, AllyMaterial);
@@ -37,7 +37,6 @@ void UAllyComponent::Enlist(AActor *LeaderP) {
     Leader = LeaderP;
 
     if (HealthComponent) {
-        HealthComponent->SetCurrentHealth(HealthComponent->MaxHealth);
         HealthComponent->Revive();
     }
 }

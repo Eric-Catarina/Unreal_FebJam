@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "MonoGrinding/AllyComponent.h"
+#include "MonoGrinding/DefaultUnitOrchestrator.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
 
@@ -146,13 +147,12 @@ void ADefaultPlayer::SummonOrEnlistUnit() {
     if (!HitActor)
         return;
 
-    UEnemyComponent *HitEnemy = HitActor->GetComponentByClass<UEnemyComponent>();
-
-    if (HitEnemy) {
-        HitActor->Destroy();
+    ADefaultUnitOrchestrator *HitUnit = Cast<ADefaultUnitOrchestrator>(HitActor);
+    if (HitUnit) {
+        Enlist(HitUnit);
+    } else {
+        CreateAllyAtPosition(TargetLocation);
     }
-
-    CreateAllyAtPosition(TargetLocation);
 }
 
 void ADefaultPlayer::CreateAllyAtPosition(FVector Position) {
@@ -177,19 +177,22 @@ void ADefaultPlayer::CreateAllyAtPosition(FVector Position) {
         return;
     }
 
-    AActor *UnitActor =
-        GetWorld()->SpawnActor<AActor>(AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
+    ADefaultUnitOrchestrator *Unit = GetWorld()->SpawnActor<ADefaultUnitOrchestrator>(
+        AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
 
-    if (!UnitActor)
-        return;
-
-    UAllyComponent *Ally = UnitActor->GetComponentByClass<UAllyComponent>();
-    if (Ally) {
-        Enlist(Ally);
-    }
+    Enlist(Unit);
 }
 
-void ADefaultPlayer::Enlist(UAllyComponent *Ally) {
+void ADefaultPlayer::Enlist(ADefaultUnitOrchestrator *Unit) {
+    if (!Unit)
+        return;
+
+    Unit->SwitchToAlly();
+    UAllyComponent *Ally = Unit->AllyComponent;
+
+    if (!Ally)
+        return;
+
     Ally->Enlist(this);
     Cast<APawn>(Ally->GetOwner())->SpawnDefaultController();
     Allies.Add(Ally);

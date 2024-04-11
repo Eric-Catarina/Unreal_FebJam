@@ -43,6 +43,9 @@ public:
     UHealthComponent *HealthComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
+    UAttackComponent *AttackComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
     USkeletalMeshComponent *SkeletalMeshComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")

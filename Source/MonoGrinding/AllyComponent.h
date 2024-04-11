@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "AttackComponent.h"
 #include "Components/ActorComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "CoreMinimal.h"
@@ -40,6 +41,9 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally|Debug")
     ACharacter *OwnerCharacter;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally|Debug")
+    UAttackComponent *AttackComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally|Debug")
     UHealthComponent *HealthComponent;

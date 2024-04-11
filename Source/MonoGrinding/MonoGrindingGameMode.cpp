@@ -33,5 +33,7 @@ void AMonoGrindingGameMode::SpawnEnemy() {
     UE_LOG(LogTemp, Warning, TEXT("GameMode::SpawnEnemy -> EnemyClass: %s"),
            *DefaultEnemyClass->GetName());
 
-    GetWorld()->SpawnActor<AActor>(DefaultEnemyClass, navLocation.Location, FRotator::ZeroRotator);
+    ADefaultUnitOrchestrator *Unit = GetWorld()->SpawnActor<ADefaultUnitOrchestrator>(
+        DefaultEnemyClass, navLocation.Location, FRotator::ZeroRotator);
+    Unit->SwitchToEnemy();
 }

@@ -17,12 +17,9 @@ UEnemyComponent::UEnemyComponent() {
 void UEnemyComponent::BeginPlay() {
     Super::BeginPlay();
     OwnerCustomCharacter = Cast<AMonoGrindingCharacter>(GetOwner());
+    AttackComponent = GetOwner()->FindComponentByClass<UAttackComponent>();
     HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
     SkeletalMeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
-
-    if (OwnerCustomCharacter && OwnerCustomCharacter->Team == ETeamType::Enemy) {
-        Enable();
-    }
 }
 
 void UEnemyComponent::OnComponentDestroyed(bool bDestroyingHierarchy) {
@@ -32,6 +29,10 @@ void UEnemyComponent::OnComponentDestroyed(bool bDestroyingHierarchy) {
 void UEnemyComponent::Enable() {
     Enabled = true;
     StartPursuit();
+
+    if (AttackComponent) {
+        AttackComponent->TargetType = ETeamType::Ally;
+    }
 
     if (HealthComponent) {
         HealthComponent->OnDeath.AddDynamic(this, &UEnemyComponent::OnDeath);

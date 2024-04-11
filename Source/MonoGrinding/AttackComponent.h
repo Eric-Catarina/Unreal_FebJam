@@ -60,14 +60,5 @@ public:
 
 protected:
     virtual void BeginPlay() override;
-
-private:
     void DealDamage(AActor *Target);
-
-    bool IsEnemy(AActor *Target) {
-        // Implement logic to determine if the target is an enemy based on TeamID
-        // This could involve checking a similar TeamID property on the target
-        // actor/component
-        return true;
-    }
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "MonoGrinding/DefaultUnitOrchestrator.h"
 #include "MonoGrindingGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -17,7 +18,7 @@ public:
     const std::string EnemySpawnerCategory = "Enemy Spawner";
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EnemySpawnerCategory)
-    TSubclassOf<AActor> DefaultEnemyClass;
+    TSubclassOf<ADefaultUnitOrchestrator> DefaultEnemyClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EnemySpawnerCategory)
     FVector SpawnAreaCenter;

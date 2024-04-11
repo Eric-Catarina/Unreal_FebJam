@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MonoGrinding/AllyComponent.h"
+#include "MonoGrinding/DefaultUnitOrchestrator.h"
 #include "MonoGrindingCharacter.h"
 
 #include "DefaultPlayer.generated.h"
@@ -85,11 +86,11 @@ public:
     TArray<UAllyComponent *> Allies;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ally")
-    TSubclassOf<AActor> AllyBlueprint;
+    TSubclassOf<ADefaultUnitOrchestrator> AllyBlueprint;
 
     TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
     ADefaultPlayer();
 
     void BeginPlay();
-    void Enlist(UAllyComponent *Ally);
+    void Enlist(ADefaultUnitOrchestrator *Unit);
 };

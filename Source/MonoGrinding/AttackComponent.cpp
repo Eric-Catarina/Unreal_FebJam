@@ -7,17 +7,10 @@
 #include "MonoGrinding/DefaultPlayer.h"
 #include "NiagaraFunctionLibrary.h"
 
-// Sets default values for this component's properties
 UAttackComponent::UAttackComponent() {
-    // Set this component to be initialized when the game starts, and to be ticked
-    // every frame.  You can turn these features off to improve performance if you
-    // don't need them.
     PrimaryComponentTick.bCanEverTick = true;
-
-    // ...
 }
 
-// Called when the game starts
 void UAttackComponent::BeginPlay() {
     Super::BeginPlay();
 
@@ -25,13 +18,10 @@ void UAttackComponent::BeginPlay() {
                                            &UAttackComponent::PerformAttack, AttackInterval, true);
 }
 
-// Called every frame
 void UAttackComponent::TickComponent(float DeltaTime,
                                      ELevelTick TickType,
                                      FActorComponentTickFunction *ThisTickFunction) {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-    // ...
 }
 
 void UAttackComponent::PerformAttack() {
@@ -41,7 +31,7 @@ void UAttackComponent::PerformAttack() {
 
     UHealthComponent *HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
 
-    if (!HealthComponent || HealthComponent->CurrentHealth <= 0)
+    if (!HealthComponent || HealthComponent->IsDead)
         return;
 
     AActor *NearestTarget = nullptr;
@@ -51,10 +41,8 @@ void UAttackComponent::PerformAttack() {
         AMonoGrindingCharacter *PossibleTargetCharacter =
             Cast<AMonoGrindingCharacter>(PossibleTargetActor);
 
-        if (!PossibleTargetCharacter)
-            continue;
-
-        if (PossibleTargetCharacter == GetOwner() || TargetType == PossibleTargetCharacter->Team) {
+        if (!PossibleTargetCharacter || PossibleTargetCharacter == GetOwner() ||
+            TargetType != PossibleTargetCharacter->Team) {
             continue;
         }
 
@@ -69,6 +57,8 @@ void UAttackComponent::PerformAttack() {
 
     if (!NearestTarget)
         return;
+
+    DealDamage(NearestTarget);
 
     if (SlashVFX && SlashVFX2) {
         // Calcula a rotação do VFX para apontar para o alvo
@@ -86,8 +76,6 @@ void UAttackComponent::PerformAttack() {
     if (HitSound) {
         UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetOwner()->GetActorLocation());
     }
-
-    DealDamage(NearestTarget);
 }
 
 void UAttackComponent::DealDamage(AActor *Target) {

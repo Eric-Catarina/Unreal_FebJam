@@ -10,111 +10,84 @@
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent() {
-    // Set this component to be initialized when the game starts, and to be ticked
-    // every frame.  You can turn these features off to improve performance if you
-    // don't need them.
     PrimaryComponentTick.bCanEverTick = true;
 
-    // Valores padrão
     MaxHealth = 100.f;
-    CurrentHealth = MaxHealth;
+    Current = MaxHealth;
 }
 
 void UHealthComponent::BeginPlay() {
     Super::BeginPlay();
-    UE_LOG(LogTemp, Warning, TEXT("UHealthComponent Begin Play"));
 
-    MovementComponent =
-        Cast<ACharacter>(GetOwner())->GetComponentByClass<UCharacterMovementComponent>();
-    if (MovementComponent) {
-        UE_LOG(LogTemp, Warning, TEXT("Movement Component: %s"), *MovementComponent->GetName());
-    }
-
+    MovementComponent = GetOwner()->GetComponentByClass<UCharacterMovementComponent>();
+    SkeletalMeshComponent = GetOwner()->GetComponentByClass<USkeletalMeshComponent>();
     HealthBarWidget = GetOwner()->GetComponentByClass<UWidgetComponent>();
-    if (HealthBarWidget) {
-        UE_LOG(LogTemp, Warning, TEXT("HealthBarWidget: %s"), *HealthBarWidget->GetName());
-    }
-}
-
-// Called every frame
-void UHealthComponent::TickComponent(float DeltaTime,
-                                     ELevelTick TickType,
-                                     FActorComponentTickFunction *ThisTickFunction) {
-    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 void UHealthComponent::TakeDamage(float DamageAmount) {
-    float newHealthAmount = FMath::Clamp(CurrentHealth - DamageAmount, 0.f, MaxHealth);
-    SetCurrentHealth(newHealthAmount);
-
-    if (CurrentHealth <= 0) {
-        Die();
-    }
+    SetCurrent(Current - DamageAmount);
 }
 
 void UHealthComponent::Heal(float HealAmount) {
-    float newHealthAmount = FMath::Clamp(CurrentHealth + HealAmount, 0.f, MaxHealth);
-    SetCurrentHealth(newHealthAmount);
+    SetCurrent(Current + HealAmount);
 }
 
-void UHealthComponent::SetMaxHealth(float NewMaxHealth) {
+void UHealthComponent::SetMax(float NewMaxHealth) {
     MaxHealth = NewMaxHealth;
-    CurrentHealth = MaxHealth;
-    SetCurrentHealth(CurrentHealth);
+    SetCurrent(MaxHealth);
 }
 
-void UHealthComponent::SetCurrentHealth(float NewHealth) {
-    CurrentHealth = NewHealth;
+void UHealthComponent::SetCurrent(float NewHealth) {
+    if (IsDead)
+        return;
 
-    float HealthPercent = GetHealthPercent();
-    FString Command = FString::Printf(TEXT("UpdateHealthBar %f"), HealthPercent);
-    FOutputDeviceNull Ar;
+    Current = FMath::Clamp(NewHealth, 0.f, MaxHealth);
+
+    if (Current <= 0) {
+        DieInternal();
+    }
 
     if (!HealthBarWidget || !HealthBarWidget->GetWidget()) {
         UE_LOG(LogTemp, Warning, TEXT("No HealthBarWidget found on %s"), *GetOwner()->GetName());
         return;
     }
 
+    float HealthPercent = GetPercent();
+    FString Command = FString::Printf(TEXT("UpdateHealthBar %f"), HealthPercent);
+    FOutputDeviceNull Ar;
+
     HealthBarWidget->GetWidget()->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
 }
 
-void UHealthComponent::SetHealthPercent(float NewHealthPercent) {
-    CurrentHealth = FMath::Clamp(NewHealthPercent * MaxHealth, 0.f, MaxHealth);
-    SetCurrentHealth(CurrentHealth);
+void UHealthComponent::SetByPercent(float NewHealthPercent) {
+    SetCurrent(NewHealthPercent * MaxHealth);
 }
 
-float UHealthComponent::GetHealthPercent() const {
-    return CurrentHealth / MaxHealth;
+float UHealthComponent::GetPercent() const {
+    return Current / MaxHealth;
 }
 
 void UHealthComponent::Die() {
-    // if (!Owner) return;
-    // // Encontre o componente de malha esquelética
-    // USkeletalMeshComponent* MeshComp =
-    // Cast<USkeletalMeshComponent>(Owner->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
-    // if (MeshComp)
-    // {
-    // 	UAnimInstance* AnimInstance = MeshComp->GetAnimInstance();
-    // 	if (AnimInstance)
-    // 	{
-    // 		// Supondo que você tenha uma referência para a montagem de
-    // animação
-    //
-    // 		// Tocar a montagem de animação
-    // 		AnimInstance->Montage_Play(TPoseMontage);
-    // 		MeshComp->SetAnimationMode(EAnimationMode::AnimationCustomMode); //
-    // Opção para manter na pose final, mas depende do seu setup
-    // 		// Rotate the character 180 in X
-    // 	}
-    // }
+    SetCurrent(0);
+}
 
+void UHealthComponent::DieInternal() {
     IsDead = true;
+    OnDeath.Broadcast();
+
+    if (SkeletalMeshComponent) {
+        // UAnimInstance *AnimInstance = MeshComp->GetAnimInstance();
+        // if (AnimInstance) {
+        //         AnimInstance->Montage_Play(TPoseMontage);
+        //     MeshComp->SetAnimationMode(EAnimationMode::AnimationCustomMode); //
+        // }
+
+        SkeletalMeshComponent->SetAnimationMode(EAnimationMode::AnimationCustomMode); //
+    }
 
     if (MovementComponent) {
         MovementComponent->DisableMovement();
     }
-
-    OnDeath.Broadcast();
 
     if (DeathSound) {
         UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());
@@ -122,14 +95,18 @@ void UHealthComponent::Die() {
 }
 
 void UHealthComponent::Revive() {
+    ReviveInternal();
+    SetCurrent(MaxHealth);
+}
+
+void UHealthComponent::ReviveInternal() {
     IsDead = false;
-    MovementComponent->SetMovementMode(MOVE_Walking);
 
-    AActor *ownerActor = GetOwner();
-    USkeletalMeshComponent *meshComponent = Cast<USkeletalMeshComponent>(
-        ownerActor->GetComponentByClass(USkeletalMeshComponent::StaticClass()));
+    if (MovementComponent) {
+        MovementComponent->SetMovementMode(MOVE_Walking);
+    }
 
-    if (meshComponent) {
-        meshComponent->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+    if (SkeletalMeshComponent) {
+        SkeletalMeshComponent->SetAnimationMode(EAnimationMode::AnimationBlueprint);
     }
 }

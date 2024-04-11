@@ -4,6 +4,7 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Components/ActorComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/WidgetComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -25,10 +26,6 @@ protected:
     virtual void BeginPlay() override;
 
 public:
-    virtual void TickComponent(float DeltaTime,
-                               ELevelTick TickType,
-                               FActorComponentTickFunction *ThisTickFunction) override;
-
     UFUNCTION(BlueprintCallable, Category = "Health")
     void TakeDamage(float DamageAmount);
 
@@ -36,31 +33,10 @@ public:
     void Heal(float HealAmount);
 
     UFUNCTION(BlueprintCallable, Category = "Health")
-    void SetCurrentHealth(float NewHealth);
-
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    void SetMaxHealth(float NewMaxHealth);
-
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    float GetHealthPercent() const;
-
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    void SetHealthPercent(float NewHealthPercent);
-
-    UFUNCTION(BlueprintCallable, Category = "Health")
     void Die();
 
     UFUNCTION(BlueprintCallable, Category = "Health")
     void Revive();
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
-    UCharacterMovementComponent *MovementComponent;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-    float MaxHealth;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
-    float CurrentHealth;
 
     UPROPERTY(BlueprintAssignable, Category = "Health")
     FOnDeath OnDeath;
@@ -74,6 +50,37 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
     USoundBase *DeathSound;
 
-private:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+    float MaxHealth;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
+    USkeletalMeshComponent *SkeletalMeshComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
+    UCharacterMovementComponent *MovementComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
     bool IsDead = false;
+
+protected:
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetCurrent(float NewHealth);
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetMax(float NewMaxHealth);
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    float GetPercent() const;
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void DieInternal();
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void ReviveInternal();
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetByPercent(float NewHealthPercent);
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
+    float Current;
 };
