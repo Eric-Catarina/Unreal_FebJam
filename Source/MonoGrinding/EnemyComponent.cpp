@@ -95,13 +95,3 @@ void UEnemyComponent::Pursuit(AActor *TargetActor) {
 void UEnemyComponent::OnDeath() {
     UE_LOG(LogTemp, Warning, TEXT("Enemy %s has died!"), *GetName());
 }
-
-// CharacterMovementComponent = Cast<ACharacter>(GetOwner())->GetCharacterMovement();
-// CharacterMovementComponent->MaxWalkSpeed = 250.f;
-// CharacterMovementComponent->MinAnalogWalkSpeed = 10.f;
-// CharacterMovementComponent->BrakingDecelerationWalking = 1000.f;
-// CharacterMovementComponent->BrakingDecelerationFalling = 750.0f;
-// CharacterMovementComponent->MaxWalkSpeed = 0;
-// CharacterMovementComponent->MinAnalogWalkSpeed = 0;
-// CharacterMovementComponent->BrakingDecelerationWalking = 0;
-// CharacterMovementComponent->BrakingDecelerationFalling = 0;

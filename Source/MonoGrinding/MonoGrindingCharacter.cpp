@@ -22,19 +22,20 @@ AMonoGrindingCharacter::AMonoGrindingCharacter() {
     bUseControllerRotationYaw = false;
     bUseControllerRotationRoll = false;
 
-    // Configure character movement
-    GetCharacterMovement()->bOrientRotationToMovement =
-        true; // Character moves in the direction of input...
+    GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
-
-    // Note: For faster iteration times these variables, and many more, can be
-    // tweaked in the Character Blueprint instead of recompiling to adjust them
-    GetCharacterMovement()->JumpZVelocity = 700.f;
     GetCharacterMovement()->AirControl = 0.35f;
-    GetCharacterMovement()->MaxWalkSpeed = 500.f;
-    GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-    GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-    GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+    GetCharacterMovement()->BrakingDecelerationFalling = 750.0f;
+    GetCharacterMovement()->BrakingDecelerationWalking = 1000.f;
+    GetCharacterMovement()->BrakingFrictionFactor = 1.0f;
+    GetCharacterMovement()->GravityScale = 1.75f;
+    GetCharacterMovement()->JumpZVelocity = 700.f;
+    GetCharacterMovement()->MaxAcceleration = 1500;
+    GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+    GetCharacterMovement()->MinAnalogWalkSpeed = 10.f;
+    GetCharacterMovement()->SetFixedBrakingDistance(200.0f);
+    GetCharacterMovement()->UseAccelerationForPathFollowing();
+    GetCharacterMovement()->bUseSeparateBrakingFriction = true;
 
     HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
     AttackComponent = CreateDefaultSubobject<UAttackComponent>(TEXT("AttackComponent"));

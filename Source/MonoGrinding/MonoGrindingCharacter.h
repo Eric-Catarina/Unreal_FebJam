@@ -33,7 +33,7 @@ public:
     virtual void Die();
     void Revive();
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Category)
     ETeamType Team;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Health")
