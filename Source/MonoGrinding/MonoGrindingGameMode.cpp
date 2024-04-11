@@ -35,5 +35,9 @@ void AMonoGrindingGameMode::SpawnEnemy() {
 
     ADefaultUnitOrchestrator *Unit = GetWorld()->SpawnActor<ADefaultUnitOrchestrator>(
         DefaultEnemyClass, navLocation.Location, FRotator::ZeroRotator);
+
+    if (!Unit)
+        return;
+
     Unit->SwitchToEnemy();
 }
