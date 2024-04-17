@@ -128,6 +128,9 @@ void ADefaultPlayer::MoveAllies() {
     UE_LOG(LogTemp, Warning, TEXT("Valid TargetLocation, Moving Allies"));
 
     for (auto &Ally : Allies) {
+        if (!Ally)
+            continue;
+
         Ally->MoveTo(TargetLocation);
     }
 }
@@ -184,16 +187,14 @@ void ADefaultPlayer::CreateAllyAtPosition(FVector Position) {
 }
 
 void ADefaultPlayer::Enlist(ADefaultUnitOrchestrator *Unit) {
-    if (!Unit)
+    if (!Unit || !Unit->SwitchToAlly())
         return;
 
-    Unit->SwitchToAlly();
     UAllyComponent *Ally = Unit->AllyComponent;
 
     if (!Ally)
         return;
 
     Ally->Enlist(this);
-    Cast<APawn>(Ally->GetOwner())->SpawnDefaultController();
     Allies.Add(Ally);
 }

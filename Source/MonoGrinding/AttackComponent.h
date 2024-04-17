@@ -12,6 +12,7 @@ UENUM(BlueprintType)
 enum class ETeamType : uint8 {
     Enemy UMETA(DisplayName = "Enemy"),
     Ally UMETA(DisplayName = "Ally"),
+    None UMETA(DisplayName = "None"),
 };
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))

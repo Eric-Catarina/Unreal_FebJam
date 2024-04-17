@@ -27,6 +27,10 @@ void UAllyComponent::Enable() {
     if (AllyMaterial) {
         SkeletalMeshComponent->SetMaterial(0, AllyMaterial);
     }
+
+    if (HealthComponent) {
+        HealthComponent->OnDeath.AddDynamic(this, &UAllyComponent::OnDeath);
+    }
 }
 
 void UAllyComponent::Disable() {
@@ -54,4 +58,8 @@ void UAllyComponent::MoveTo(const FVector &TargetLocation) {
 
     UE_LOG(LogTemp, Warning, TEXT("AI Controller all good, moving"));
     OwnerAiController->MoveToLocation(TargetLocation);
+}
+
+void UAllyComponent::OnDeath() {
+    GetOwner()->Destroy();
 }

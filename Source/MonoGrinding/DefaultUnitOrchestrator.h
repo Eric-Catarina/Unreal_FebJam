@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MonoGrinding/AllyComponent.h"
+#include "MonoGrinding/AttackComponent.h"
 #include "MonoGrinding/EnemyComponent.h"
 #include "DefaultUnitOrchestrator.generated.h"
 
@@ -18,10 +19,10 @@ public:
     void BeginPlay() override;
 
     UFUNCTION(BlueprintCallable, Category = Category)
-    void SwitchToAlly();
+    bool SwitchToAlly();
 
     UFUNCTION(BlueprintCallable, Category = Category)
-    void SwitchToEnemy();
+    bool SwitchToEnemy();
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Unit")
     UAllyComponent *AllyComponent;

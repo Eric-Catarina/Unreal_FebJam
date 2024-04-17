@@ -15,7 +15,14 @@ void ADefaultUnitOrchestrator::BeginPlay() {
     Super::BeginPlay();
 }
 
-void ADefaultUnitOrchestrator::SwitchToAlly() {
+bool ADefaultUnitOrchestrator::SwitchToAlly() {
+    if (Team == ETeamType::Ally || !HealthComponent)
+        return false;
+
+    bool IsAliveEnemy = Team == ETeamType::Enemy && !HealthComponent->IsDead;
+    if (IsAliveEnemy)
+        return false;
+
     if (AllyComponent) {
         AllyComponent->Enable();
     }
@@ -25,9 +32,13 @@ void ADefaultUnitOrchestrator::SwitchToAlly() {
     }
 
     Team = ETeamType::Ally;
+    return true;
 }
 
-void ADefaultUnitOrchestrator::SwitchToEnemy() {
+bool ADefaultUnitOrchestrator::SwitchToEnemy() {
+    if (Team == ETeamType::Enemy)
+        return false;
+
     if (AllyComponent) {
         AllyComponent->Disable();
     }
@@ -37,4 +48,5 @@ void ADefaultUnitOrchestrator::SwitchToEnemy() {
     }
 
     Team = ETeamType::Enemy;
+    return true;
 }
