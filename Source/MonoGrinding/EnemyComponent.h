@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include "AIController.h"
 #include "Components/ActorComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
 #include "MonoGrinding/HealthComponent.h"
 #include "MonoGrindingCharacter.h"
 #include "Perception/PawnSensingComponent.h"
@@ -21,6 +23,12 @@ public:
 
     virtual void BeginPlay() override;
 
+    virtual void TickComponent(float DeltaTime,
+                               ELevelTick TickType,
+                               FActorComponentTickFunction *ThisTickFunction);
+
+    void OnComponentDestroyed(bool bDestroyingHierarchy) override;
+
     UFUNCTION(BlueprintCallable, Category = "Enemy")
     void Enable();
 
@@ -31,7 +39,7 @@ public:
     void StartPursuit();
 
     UFUNCTION(Category = "Enemy")
-    void Pursuit(AActor *TargetActor);
+    void Pursuit();
 
     UFUNCTION(Category = "Enemy")
     void OnDeath();
@@ -57,5 +65,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
     UCharacterMovementComponent *CharacterMovementComponent;
 
-    void OnComponentDestroyed(bool bDestroyingHierarchy) override;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
+    AActor *TargetActor;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy|Debug")
+    AAIController *AiController;
 };

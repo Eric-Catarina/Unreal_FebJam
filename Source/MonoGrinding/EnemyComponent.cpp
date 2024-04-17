@@ -20,6 +20,26 @@ void UEnemyComponent::BeginPlay() {
     AttackComponent = GetOwner()->FindComponentByClass<UAttackComponent>();
     HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
     SkeletalMeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
+    PrimaryComponentTick.bCanEverTick = true;
+
+    APawn *OwnerPawn = Cast<APawn>(GetOwner());
+    if (!OwnerPawn)
+        return;
+
+    AController *Controller = OwnerPawn->GetController();
+    if (!Controller)
+        return;
+
+    AiController = Cast<AAIController>(Controller);
+}
+
+void UEnemyComponent::TickComponent(float DeltaTime,
+                                    ELevelTick TickType,
+                                    FActorComponentTickFunction *ThisTickFunction) {
+    if (!Enabled)
+        return;
+
+    Pursuit();
 }
 
 void UEnemyComponent::OnComponentDestroyed(bool bDestroyingHierarchy) {
@@ -63,37 +83,17 @@ void UEnemyComponent::StartPursuit() {
     UE_LOG(LogTemp, Warning, TEXT("Found players: %d"), FoundPlayersCount);
 
     if (FoundPlayersCount > 0) {
-        Pursuit(FoundPlayers[0]);
+        TargetActor = FoundPlayers[0];
     }
 }
 
-void UEnemyComponent::Pursuit(AActor *TargetActor) {
+void UEnemyComponent::Pursuit() {
     if (!TargetActor) {
         UE_LOG(LogTemp, Error, TEXT("TargetActor is null!"));
         return;
     }
 
-    APawn *OwnerPawn = Cast<APawn>(GetOwner());
-    if (!OwnerPawn) {
-        UE_LOG(LogTemp, Error, TEXT("OwnerPawn is null!"));
-        return;
-    }
-
-    AController *Controller = OwnerPawn->GetController();
-    if (!Controller) {
-        UE_LOG(LogTemp, Error, TEXT("Controller is null!"));
-        return;
-    }
-
-    UE_LOG(LogTemp, Warning, TEXT("Controller: %s"), Controller);
-
-    AAIController *AIController = Cast<AAIController>(Controller);
-    if (!AIController) {
-        UE_LOG(LogTemp, Error, TEXT("AIController is null!"));
-        return;
-    }
-
-    AIController->MoveToActor(TargetActor);
+    AiController->MoveToActor(TargetActor);
 }
 
 void UEnemyComponent::OnDeath() {
