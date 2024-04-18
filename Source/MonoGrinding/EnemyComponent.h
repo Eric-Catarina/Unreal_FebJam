@@ -25,7 +25,7 @@ public:
 
     virtual void TickComponent(float DeltaTime,
                                ELevelTick TickType,
-                               FActorComponentTickFunction *ThisTickFunction);
+                               FActorComponentTickFunction *ThisTickFunction) override;
 
     void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 

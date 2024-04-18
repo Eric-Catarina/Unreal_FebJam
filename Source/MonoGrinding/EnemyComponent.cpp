@@ -12,6 +12,7 @@
 #include "MonoGrinding/MonoGrindingCharacter.h"
 
 UEnemyComponent::UEnemyComponent() {
+    PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UEnemyComponent::BeginPlay() {
@@ -20,7 +21,6 @@ void UEnemyComponent::BeginPlay() {
     AttackComponent = GetOwner()->FindComponentByClass<UAttackComponent>();
     HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
     SkeletalMeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
-    PrimaryComponentTick.bCanEverTick = true;
 
     APawn *OwnerPawn = Cast<APawn>(GetOwner());
     if (!OwnerPawn)
@@ -36,6 +36,8 @@ void UEnemyComponent::BeginPlay() {
 void UEnemyComponent::TickComponent(float DeltaTime,
                                     ELevelTick TickType,
                                     FActorComponentTickFunction *ThisTickFunction) {
+    Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
     if (!Enabled)
         return;
 
