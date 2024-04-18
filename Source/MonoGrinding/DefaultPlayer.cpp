@@ -32,25 +32,29 @@ ADefaultPlayer::ADefaultPlayer() {
     ObjectTypes.Add(
         UEngineTypes::ConvertToObjectType(ECC_Pawn)); // Ou o tipo customizado para suas unidades
 
+    AllyManaCost = 25;
+    MaxMana = 100;
+    CurrentMana = MaxMana;
+
     // Note: The skeletal mesh and anim blueprint references on the Mesh component
     // (inherited from Character) are set in the derived blueprint asset named
     // ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
 void ADefaultPlayer::BeginPlay() {
-    // Call the base class
     Super::BeginPlay();
 
-    // Add Input Mapping Context
-    if (APlayerController *PlayerController = Cast<APlayerController>(Controller)) {
-        if (UEnhancedInputLocalPlayerSubsystem *Subsystem =
-                ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-                    PlayerController->GetLocalPlayer())) {
-            Subsystem->AddMappingContext(DefaultMappingContext, 0);
-            PlayerController->bShowMouseCursor = true;
-            PlayerController->bEnableClickEvents = true;
-            PlayerController->bEnableMouseOverEvents = true;
-        }
+    PlayerController = Cast<APlayerController>(Controller);
+    if (!PlayerController)
+        return;
+
+    if (UEnhancedInputLocalPlayerSubsystem *Subsystem =
+            ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+                PlayerController->GetLocalPlayer())) {
+        Subsystem->AddMappingContext(DefaultMappingContext, 0);
+        PlayerController->bShowMouseCursor = true;
+        PlayerController->bEnableClickEvents = true;
+        PlayerController->bEnableMouseOverEvents = true;
     }
 }
 
@@ -147,7 +151,7 @@ void ADefaultPlayer::SummonOrEnlistUnit() {
 
     AActor *HitActor = HitResult.GetActor();
 
-    if (!HitActor)
+    if (!HitActor || !TryUseMana(AllyManaCost))
         return;
 
     ADefaultUnitOrchestrator *HitUnit = Cast<ADefaultUnitOrchestrator>(HitActor);
@@ -156,6 +160,19 @@ void ADefaultPlayer::SummonOrEnlistUnit() {
     } else {
         CreateAllyAtPosition(TargetLocation);
     }
+}
+
+bool ADefaultPlayer::TryUseMana(int Amount) {
+    if (Amount > CurrentMana) {
+        UE_LOG(LogTemp, Warning, TEXT("Not enough mana"));
+        return false;
+    }
+
+    CurrentMana -= Amount;
+    UE_LOG(LogTemp, Warning, TEXT("Broadcasting ManaChanged"));
+    ManaChanged.Broadcast(CurrentMana);
+
+    return true;
 }
 
 void ADefaultPlayer::CreateAllyAtPosition(FVector Position) {

@@ -3,11 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/PlayerController.h"
 #include "MonoGrinding/AllyComponent.h"
 #include "MonoGrinding/DefaultUnitOrchestrator.h"
 #include "MonoGrindingCharacter.h"
+#include "UObject/ObjectMacros.h"
 
 #include "DefaultPlayer.generated.h"
+
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChanged, int, NewValue);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
@@ -15,6 +20,8 @@ class MONOGRINDING_API ADefaultPlayer : public AMonoGrindingCharacter {
     GENERATED_BODY()
 
 protected:
+    bool TryUseMana(int Amount);
+
     void Move(const FInputActionValue &Value);
 
     void Look(const FInputActionValue &Value);
@@ -82,8 +89,23 @@ public:
         return FollowCamera;
     }
 
+    UPROPERTY(BlueprintAssignable, Category = "Player|Mana")
+    FManaChanged ManaChanged;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Mana")
+    int AllyManaCost;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Mana")
+    int MaxMana;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Mana")
+    int CurrentMana;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally")
     TArray<UAllyComponent *> Allies;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Debug")
+    APlayerController *PlayerController;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ally")
     TSubclassOf<ADefaultUnitOrchestrator> AllyBlueprint;
