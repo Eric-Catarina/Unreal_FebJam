@@ -47,16 +47,8 @@ void UHealthComponent::SetCurrent(float NewHealth) {
         DieInternal();
     }
 
-    if (!HealthBarWidget || !HealthBarWidget->GetWidget()) {
-        UE_LOG(LogTemp, Warning, TEXT("No HealthBarWidget found on %s"), *GetOwner()->GetName());
-        return;
-    }
-
     float HealthPercent = GetPercent();
-    FString Command = FString::Printf(TEXT("UpdateHealthBar %f"), HealthPercent);
-    FOutputDeviceNull Ar;
-
-    HealthBarWidget->GetWidget()->CallFunctionByNameWithArguments(*Command, Ar, nullptr, true);
+    HealthChangedPercent.Broadcast(HealthPercent);
 }
 
 void UHealthComponent::SetByPercent(float NewHealthPercent) {

@@ -12,6 +12,10 @@
 
 #include "HealthComponent.generated.h"
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthChangedPercent, float, NewPercent);
+
+UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -37,6 +41,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Health")
     void Revive();
+
+    UPROPERTY(BlueprintAssignable, Category = "Health")
+    FHealthChangedPercent HealthChangedPercent;
 
     UPROPERTY(BlueprintAssignable, Category = "Health")
     FOnDeath OnDeath;
