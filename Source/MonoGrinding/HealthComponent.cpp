@@ -21,7 +21,6 @@ void UHealthComponent::BeginPlay() {
 
     MovementComponent = GetOwner()->GetComponentByClass<UCharacterMovementComponent>();
     SkeletalMeshComponent = GetOwner()->GetComponentByClass<USkeletalMeshComponent>();
-    HealthBarWidget = GetOwner()->GetComponentByClass<UWidgetComponent>();
 }
 
 void UHealthComponent::TakeDamage(float DamageAmount) {

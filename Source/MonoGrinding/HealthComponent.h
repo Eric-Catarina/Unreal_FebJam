@@ -51,9 +51,6 @@ public:
     UPROPERTY(EditAnywhere, Category = "Animation")
     UAnimMontage *TPoseMontage;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-    UWidgetComponent *HealthBarWidget;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
     USoundBase *DeathSound;
 
