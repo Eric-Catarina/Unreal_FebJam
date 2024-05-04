@@ -41,6 +41,20 @@ ADefaultPlayer::ADefaultPlayer() {
     // ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+void ADefaultPlayer::Tick(float DeltaTime) {
+    // if (!PlayerController)
+    return;
+
+    FHitResult HitResult;
+    GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false,
+                                                                    HitResult);
+
+    FRotator LookAtRotation = (HitResult.Location - GetActorLocation()).Rotation();
+    LookAtRotation.Pitch = 0;
+
+    SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
+}
+
 void ADefaultPlayer::BeginPlay() {
     Super::BeginPlay();
 
@@ -113,9 +127,8 @@ void ADefaultPlayer::Look(const FInputActionValue &Value) {
     FVector2D LookAxisVector = Value.Get<FVector2D>();
 
     if (Controller != nullptr) {
-        // add yaw and pitch input to controller
-        // AddControllerYawInput(LookAxisVector.X);
-        // AddControllerPitchInput(LookAxisVector.Y);
+        AddControllerYawInput(LookAxisVector.X);
+        AddControllerPitchInput(LookAxisVector.Y);
     }
 }
 

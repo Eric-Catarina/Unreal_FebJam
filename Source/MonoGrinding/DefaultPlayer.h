@@ -81,6 +81,10 @@ protected:
     UInputAction *SummonAllyAction;
 
 public:
+    ADefaultPlayer();
+
+    void Tick(float DeltaTime) override;
+
     FORCEINLINE class USpringArmComponent *GetCameraBoom() const {
         return CameraBoom;
     }
@@ -111,7 +115,6 @@ public:
     TSubclassOf<ADefaultUnitOrchestrator> AllyBlueprint;
 
     TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-    ADefaultPlayer();
 
     void BeginPlay();
     void Enlist(ADefaultUnitOrchestrator *Unit);
