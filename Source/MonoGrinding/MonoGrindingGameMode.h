@@ -15,18 +15,16 @@ class AMonoGrindingGameMode : public AGameModeBase {
 public:
     AMonoGrindingGameMode();
 
-    const std::string EnemySpawnerCategory = "Enemy Spawner";
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EnemySpawnerCategory)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Spawner")
     TSubclassOf<ADefaultUnitOrchestrator> DefaultEnemyClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EnemySpawnerCategory)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Spawner")
     FVector SpawnAreaCenter;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EnemySpawnerCategory)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Spawner")
     float SpawnAreaRadius;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = EnemySpawnerCategory)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Spawner")
     float SpawnInterval;
 
 private:

@@ -48,7 +48,7 @@
         ueBatchFilesDirPath = "${ueRootDirPath}/Engine/Build/BatchFiles/Linux";
         ueCentosBinariesDirPath = "${ueRootDirPath}/Engine/Extras/ThirdPartyNotUE/SDKs/HostLinux/Linux_x64/v22_clang-16.0.6-centos7/x86_64-unknown-linux-gnu/bin";
         ueEditorBinPath = "${ueRootDirPath}/Engine/Binaries/Linux/UnrealEditor";
-        ueRootDirPath = "/mnt/storage/unreal_editors/ue5.3.2";
+        ueRootDirPath = "/mnt/storage/unreal_editors/ue5.4.1";
         uprojectPath = "${pwd}/${projectName}.uproject";
       in {
         default = devenv.lib.mkShell {
