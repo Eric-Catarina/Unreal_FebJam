@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "DefaultPlayer.h"
 
 #include "Blueprint/UserWidget.h"
@@ -83,53 +81,26 @@ void ADefaultPlayer::SetupPlayerInputComponent(UInputComponent *PlayerInputCompo
                     "the legacy system, then you will need to update this C++ file."),
                *GetNameSafe(this));
     }
-
-    EnhancedInputComponent->BindAction(MoveAlliesAction, ETriggerEvent::Triggered, this,
-                                       &ADefaultPlayer::MoveAllies);
-
-    EnhancedInputComponent->BindAction(SummonAllyAction, ETriggerEvent::Triggered, this,
-                                       &ADefaultPlayer::SummonOrEnlistUnit);
-
-    EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-    EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this,
-                                       &ACharacter::StopJumping);
-
-    EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this,
-                                       &ADefaultPlayer::Move);
-
-    EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this,
-                                       &ADefaultPlayer::Look);
 }
 
-void ADefaultPlayer::Move(const FInputActionValue &Value) {
-    // input is a Vector2D
-    FVector2D MovementVector = Value.Get<FVector2D>();
-
-    if (Controller != nullptr) {
-        // find out which way is forward
-        const FRotator Rotation = Controller->GetControlRotation();
-        const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-        // get forward vector
-        const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
-        // get right vector
-        const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-        // add movement
-        AddMovementInput(ForwardDirection, MovementVector.Y);
-        AddMovementInput(RightDirection, MovementVector.X);
+void ADefaultPlayer::Move(FVector2D MovementVector) {
+    if (!Controller) {
+        return;
     }
-}
 
-void ADefaultPlayer::Look(const FInputActionValue &Value) {
-    // input is a Vector2D
-    FVector2D LookAxisVector = Value.Get<FVector2D>();
+    // find out which way is forward
+    const FRotator Rotation = Controller->GetControlRotation();
+    const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-    if (Controller != nullptr) {
-        AddControllerYawInput(LookAxisVector.X);
-        AddControllerPitchInput(LookAxisVector.Y);
-    }
+    // get forward vector
+    const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+    // get right vector
+    const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+    // add movement
+    AddMovementInput(ForwardDirection, MovementVector.Y);
+    AddMovementInput(RightDirection, MovementVector.X);
 }
 
 void ADefaultPlayer::MoveAllies() {

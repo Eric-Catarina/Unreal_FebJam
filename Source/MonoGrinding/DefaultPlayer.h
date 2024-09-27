@@ -22,11 +22,16 @@ class MONOGRINDING_API ADefaultPlayer : public AMonoGrindingCharacter {
 protected:
     bool TryUseMana(int Amount);
 
-    void Move(const FInputActionValue &Value);
+    UFUNCTION(BlueprintCallable, Category = "Player")
+    void Move(FVector2D MovementVector);
 
-    void Look(const FInputActionValue &Value);
+    UFUNCTION(BlueprintCallable, Category = "Player")
     void MoveAllies();
+
+    UFUNCTION(BlueprintCallable, Category = "Player")
     void SummonOrEnlistUnit();
+
+    UFUNCTION(BlueprintCallable, Category = "Player")
     void CreateAllyAtPosition(FVector Position);
 
     virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
@@ -48,37 +53,6 @@ protected:
               Category = Input,
               meta = (AllowPrivateAccess = "true"))
     UInputMappingContext *DefaultMappingContext;
-
-    UPROPERTY(EditAnywhere,
-              BlueprintReadOnly,
-              Category = Input,
-              meta = (AllowPrivateAccess = "true"))
-    UInputAction *JumpAction;
-
-    UPROPERTY(EditAnywhere,
-              BlueprintReadOnly,
-              Category = Input,
-              meta = (AllowPrivateAccess = "true"))
-    UInputAction *MoveAction;
-
-    /** Look Input Action */
-    UPROPERTY(EditAnywhere,
-              BlueprintReadOnly,
-              Category = Input,
-              meta = (AllowPrivateAccess = "true"))
-    UInputAction *LookAction;
-
-    UPROPERTY(EditAnywhere,
-              BlueprintReadOnly,
-              Category = Input,
-              meta = (AllowPrivateAccess = "true"))
-    UInputAction *MoveAlliesAction;
-
-    UPROPERTY(EditAnywhere,
-              BlueprintReadOnly,
-              Category = Input,
-              meta = (AllowPrivateAccess = "true"))
-    UInputAction *SummonAllyAction;
 
 public:
     ADefaultPlayer();
