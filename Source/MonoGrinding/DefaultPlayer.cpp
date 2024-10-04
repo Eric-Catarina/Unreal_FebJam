@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "MonoGrinding/AllyComponent.h"
 #include "MonoGrinding/DefaultUnitOrchestrator.h"
+#include "NullHelpers.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
 
@@ -33,10 +34,6 @@ ADefaultPlayer::ADefaultPlayer() {
     AllyManaCost = 25;
     MaxMana = 100;
     CurrentMana = MaxMana;
-
-    // Note: The skeletal mesh and anim blueprint references on the Mesh component
-    // (inherited from Character) are set in the derived blueprint asset named
-    // ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
 void ADefaultPlayer::Tick(float DeltaTime) {
@@ -57,8 +54,9 @@ void ADefaultPlayer::BeginPlay() {
     Super::BeginPlay();
 
     PlayerController = Cast<APlayerController>(Controller);
-    if (!PlayerController)
+    if (!PlayerController) {
         return;
+    }
 
     if (UEnhancedInputLocalPlayerSubsystem *Subsystem =
             ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
@@ -67,6 +65,12 @@ void ADefaultPlayer::BeginPlay() {
         PlayerController->bShowMouseCursor = true;
         PlayerController->bEnableClickEvents = true;
         PlayerController->bEnableMouseOverEvents = true;
+    }
+
+    if (UnitTemplates.Num() > 0 && UnitTemplates[0]) {
+        {
+            SelectUnitTemplate(UnitTemplates[0]);
+        }
     }
 }
 
@@ -130,19 +134,21 @@ void ADefaultPlayer::SummonOrEnlistUnit() {
     GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(ObjectTypes, false,
                                                                               HitResult);
     FVector TargetLocation = HitResult.ImpactPoint;
-    if (!HitResult.bBlockingHit)
+    if (!HitResult.bBlockingHit) {
         return;
+    }
 
     AActor *HitActor = HitResult.GetActor();
 
-    if (!HitActor || !TryUseMana(AllyManaCost))
+    if (!HitActor || !TryUseMana(AllyManaCost)) {
         return;
+    }
 
     ADefaultUnitOrchestrator *HitUnit = Cast<ADefaultUnitOrchestrator>(HitActor);
     if (HitUnit) {
         Enlist(HitUnit);
     } else {
-        CreateAllyAtPosition(TargetLocation);
+        CreateUnitFromSelectedTemplateAtLocation(TargetLocation);
     }
 }
 
@@ -159,9 +165,15 @@ bool ADefaultPlayer::TryUseMana(int Amount) {
     return true;
 }
 
-void ADefaultPlayer::CreateAllyAtPosition(FVector Position) {
-    if (!GetWorld())
-        return;
+bool ADefaultPlayer::CreateUnitFromSelectedTemplateAtLocation(FVector Position) {
+    bool result = CreateUnitAtPosition(SelectedUnitTemplate, Position);
+    return result;
+}
+
+bool ADefaultPlayer::CreateUnitAtPosition(UUnitTemplate *Template, FVector Position) {
+    MG_LOG_TEMP_WARN_NULL_IF_RETURN_VALUE(GetWorld(), false);
+    MG_LOG_TEMP_WARN_NULL_IF_RETURN_VALUE(Template, false);
+    MG_LOG_TEMP_WARN_NULL_IF_RETURN_VALUE(Template->Blueprint, false);
 
     FActorSpawnParameters SpawnParams;
     SpawnParams.Owner = this;
@@ -169,20 +181,13 @@ void ADefaultPlayer::CreateAllyAtPosition(FVector Position) {
     SpawnParams.SpawnCollisionHandlingOverride =
         ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-    // Ajustar a posição baseada na posição atual do jogador
     FVector SpawnLocation = Position;
-
-    // Define a rotação do aliado, se necessário. Neste exemplo, sem rotação.
     FRotator SpawnRotation = FRotator::ZeroRotator;
 
-    // Criar a instância do aliado
-    if (!AllyBlueprint) {
-        UE_LOG(LogTemp, Warning, TEXT("AllyBlueprint is nullptr!"));
-        return;
-    }
-
     ADefaultUnitOrchestrator *Unit = GetWorld()->SpawnActor<ADefaultUnitOrchestrator>(
-        AllyBlueprint, SpawnLocation, SpawnRotation, SpawnParams);
+        Template->Blueprint, SpawnLocation, SpawnRotation, SpawnParams);
+
+    MG_LOG_TEMP_WARN_NULL_IF_RETURN_VALUE(Unit, false);
 
     Enlist(Unit);
 }
@@ -198,4 +203,8 @@ void ADefaultPlayer::Enlist(ADefaultUnitOrchestrator *Unit) {
 
     Ally->Enlist(this);
     Allies.Add(Ally);
+}
+
+void ADefaultPlayer::SelectUnitTemplate(UUnitTemplate *Template) {
+    SelectedUnitTemplate = Template;
 }

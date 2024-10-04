@@ -1,16 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "MonoGrinding/AllyComponent.h"
 #include "MonoGrinding/AttackComponent.h"
 #include "MonoGrinding/EnemyComponent.h"
+#include "MonoGrinding/Unit.h"
 #include "DefaultUnitOrchestrator.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
-class MONOGRINDING_API ADefaultUnitOrchestrator : public AMonoGrindingCharacter {
+class MONOGRINDING_API ADefaultUnitOrchestrator : public AMonoGrindingCharacter, public IUnit {
     GENERATED_BODY()
 
 public:

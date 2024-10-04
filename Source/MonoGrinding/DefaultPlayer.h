@@ -1,15 +1,19 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
 #include "GameFramework/PlayerController.h"
 #include "MonoGrinding/AllyComponent.h"
 #include "MonoGrinding/DefaultUnitOrchestrator.h"
+#include "MonoGrinding/Unit.h"
 #include "MonoGrindingCharacter.h"
 #include "UObject/ObjectMacros.h"
+#include "UnitTemplate.h"
+#include <optional>
 
 #include "DefaultPlayer.generated.h"
+
+#define NAMEOF(variable) #variable
 
 UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChanged, int, NewValue);
@@ -32,7 +36,7 @@ protected:
     void SummonOrEnlistUnit();
 
     UFUNCTION(BlueprintCallable, Category = "Player")
-    void CreateAllyAtPosition(FVector Position);
+    bool CreateUnitAtPosition(UUnitTemplate *Template, FVector Position);
 
     virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
@@ -86,10 +90,21 @@ public:
     APlayerController *PlayerController;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ally")
-    TSubclassOf<ADefaultUnitOrchestrator> AllyBlueprint;
+    TArray<UUnitTemplate *> UnitTemplates;
 
     TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 
+private:
     void BeginPlay();
     void Enlist(ADefaultUnitOrchestrator *Unit);
+    void SelectUnitTemplate(UUnitTemplate *Template);
+
+    UFUNCTION(BlueprintCallable, Category = "Player|Allies", meta = (AllowPrivateAccess = "true"))
+    bool CreateUnitFromSelectedTemplateAtLocation(FVector Position);
+
+    UPROPERTY(VisibleAnywhere,
+              BlueprintReadOnly,
+              Category = "Player|Allies",
+              meta = (AllowPrivateAccess = "true"))
+    UUnitTemplate *SelectedUnitTemplate;
 };

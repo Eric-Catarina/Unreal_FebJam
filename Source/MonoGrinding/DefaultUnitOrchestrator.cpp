@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "DefaultUnitOrchestrator.h"
 #include "MonoGrinding/AllyComponent.h"
 #include "MonoGrinding/AttackComponent.h"
