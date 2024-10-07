@@ -75,9 +75,6 @@ public:
     FManaChanged ManaChanged;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Mana")
-    int AllyManaCost;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Mana")
     int MaxMana;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Mana")

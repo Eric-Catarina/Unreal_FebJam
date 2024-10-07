@@ -3,6 +3,8 @@
 #include "MonoGrindingGameMode.h"
 #include "AI/Navigation/NavigationTypes.h"
 #include "Engine/World.h"
+#include "MonoGrinding/NullHelpers.h"
+#include "MonoGrinding/SummonHelper.h"
 #include "MonoGrindingCharacter.h"
 #include "NavigationSystem.h"
 #include "UObject/ConstructorHelpers.h"
@@ -14,16 +16,12 @@ AMonoGrindingGameMode::AMonoGrindingGameMode() {
 void AMonoGrindingGameMode::BeginPlay() {
     Super::BeginPlay();
 
-    UE_LOG(LogTemp, Warning, TEXT("GameMode::BeginPlay"));
     GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AMonoGrindingGameMode::SpawnEnemy,
                                     SpawnInterval, true);
 }
 
 void AMonoGrindingGameMode::SpawnEnemy() {
-    UE_LOG(LogTemp, Warning, TEXT("GameMode::SpawnEnemy"));
-    if (!DefaultEnemyClass) {
-        return;
-    }
+    MG_RETURN_IF(!DefaultEnemyUnitTemplate);
 
     UNavigationSystemV1 *navSystem = UNavigationSystemV1::GetCurrent(GetWorld());
     FNavLocation navLocation;
@@ -31,13 +29,12 @@ void AMonoGrindingGameMode::SpawnEnemy() {
 
     UE_LOG(LogTemp, Warning, TEXT("GameMode::SpawnEnemy -> Radius: %f"), SpawnAreaRadius);
     UE_LOG(LogTemp, Warning, TEXT("GameMode::SpawnEnemy -> EnemyClass: %s"),
-           *DefaultEnemyClass->GetName());
+           *DefaultEnemyUnitTemplate->GetName());
 
-    ADefaultUnitOrchestrator *Unit = GetWorld()->SpawnActor<ADefaultUnitOrchestrator>(
-        DefaultEnemyClass, navLocation.Location, FRotator::ZeroRotator);
+    ADefaultUnitOrchestrator *Unit =
+        Summon(DefaultEnemyUnitTemplate, GetWorld(), navLocation.Location, FRotator::ZeroRotator);
 
-    if (!Unit)
-        return;
+    MG_RETURN_IF(!Unit);
 
     Unit->SwitchToEnemy();
 }

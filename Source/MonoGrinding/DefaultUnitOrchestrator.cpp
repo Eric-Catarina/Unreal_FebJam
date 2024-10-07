@@ -3,6 +3,7 @@
 #include "MonoGrinding/AttackComponent.h"
 #include "MonoGrinding/EnemyComponent.h"
 #include "MonoGrinding/MonoGrindingCharacter.h"
+#include "NullHelpers.h"
 
 ADefaultUnitOrchestrator::ADefaultUnitOrchestrator() {
     AllyComponent = CreateDefaultSubobject<UAllyComponent>(TEXT("AllyComponent"));
@@ -13,13 +14,21 @@ void ADefaultUnitOrchestrator::BeginPlay() {
     Super::BeginPlay();
 }
 
+void ADefaultUnitOrchestrator::Setup(UUnitTemplate *PTemplate) {
+    MG_RETURN_IF(Template != nullptr);
+
+    Template = PTemplate;
+}
+
+const UUnitTemplate *ADefaultUnitOrchestrator::GetTemplate() const {
+    return Template;
+}
+
 bool ADefaultUnitOrchestrator::SwitchToAlly() {
-    if (Team == ETeamType::Ally || !HealthComponent)
-        return false;
+    MG_RETURN_VALUE_IF(Team == ETeamType::Ally || !HealthComponent, false);
 
     bool IsAliveEnemy = Team == ETeamType::Enemy && !HealthComponent->IsDead;
-    if (IsAliveEnemy)
-        return false;
+    MG_RETURN_VALUE_IF(IsAliveEnemy, false);
 
     if (AllyComponent) {
         AllyComponent->Enable();

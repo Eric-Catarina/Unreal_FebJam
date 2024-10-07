@@ -16,7 +16,7 @@ public:
     AMonoGrindingGameMode();
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Spawner")
-    TSubclassOf<ADefaultUnitOrchestrator> DefaultEnemyClass;
+    UUnitTemplate *DefaultEnemyUnitTemplate;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy Spawner")
     FVector SpawnAreaCenter;

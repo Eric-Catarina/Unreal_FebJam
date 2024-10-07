@@ -8,6 +8,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "MonoGrinding/AllyComponent.h"
 #include "MonoGrinding/DefaultUnitOrchestrator.h"
+#include "MonoGrinding/SummonHelper.h"
+#include "MonoGrinding/Unit.h"
 #include "NullHelpers.h"
 
 class UEnhancedInputLocalPlayerSubsystem;
@@ -31,7 +33,6 @@ ADefaultPlayer::ADefaultPlayer() {
     ObjectTypes.Add(
         UEngineTypes::ConvertToObjectType(ECC_Pawn)); // Ou o tipo customizado para suas unidades
 
-    AllyManaCost = 25;
     MaxMana = 100;
     CurrentMana = MaxMana;
 }
@@ -134,15 +135,12 @@ void ADefaultPlayer::SummonOrEnlistUnit() {
     GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(ObjectTypes, false,
                                                                               HitResult);
     FVector TargetLocation = HitResult.ImpactPoint;
-    if (!HitResult.bBlockingHit) {
-        return;
-    }
+
+    MG_RETURN_IF(!HitResult.bBlockingHit);
 
     AActor *HitActor = HitResult.GetActor();
 
-    if (!HitActor || !TryUseMana(AllyManaCost)) {
-        return;
-    }
+    MG_RETURN_IF(!HitActor);
 
     ADefaultUnitOrchestrator *HitUnit = Cast<ADefaultUnitOrchestrator>(HitActor);
     if (HitUnit) {
@@ -184,25 +182,25 @@ bool ADefaultPlayer::CreateUnitAtPosition(UUnitTemplate *Template, FVector Posit
     FVector SpawnLocation = Position;
     FRotator SpawnRotation = FRotator::ZeroRotator;
 
-    ADefaultUnitOrchestrator *Unit = GetWorld()->SpawnActor<ADefaultUnitOrchestrator>(
-        Template->Blueprint, SpawnLocation, SpawnRotation, SpawnParams);
+    ADefaultUnitOrchestrator *Unit =
+        Summon(Template, GetWorld(), SpawnLocation, SpawnRotation, SpawnParams);
 
     MG_LOG_TEMP_WARN_NULL_IF_RETURN_VALUE(Unit, false);
 
     Enlist(Unit);
+    return true;
 }
 
 void ADefaultPlayer::Enlist(ADefaultUnitOrchestrator *Unit) {
-    if (!Unit || !Unit->SwitchToAlly())
-        return;
+    MG_RETURN_IF(!Unit || !Unit->SwitchToAlly());
 
     UAllyComponent *Ally = Unit->AllyComponent;
 
-    if (!Ally)
-        return;
+    MG_RETURN_IF(!Ally);
 
     Ally->Enlist(this);
     Allies.Add(Ally);
+    TryUseMana(Unit->GetTemplate()->ManaCost);
 }
 
 void ADefaultPlayer::SelectUnitTemplate(UUnitTemplate *Template) {

@@ -5,6 +5,7 @@
 #include "MonoGrinding/AttackComponent.h"
 #include "MonoGrinding/EnemyComponent.h"
 #include "MonoGrinding/Unit.h"
+#include "MonoGrinding/UnitTemplate.h"
 #include "DefaultUnitOrchestrator.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -16,6 +17,8 @@ public:
     ADefaultUnitOrchestrator();
 
     void BeginPlay() override;
+    const UUnitTemplate *GetTemplate() const;
+    void Setup(UUnitTemplate *PTemplate);
 
     UFUNCTION(BlueprintCallable, Category = Category)
     bool SwitchToAlly();
@@ -28,4 +31,11 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Unit")
     UEnemyComponent *EnemyComponent;
+
+private:
+    UPROPERTY(VisibleAnywhere,
+              BlueprintReadOnly,
+              Category = "Unit",
+              meta = (AllowPrivateAccess = "true"))
+    UUnitTemplate *Template;
 };
