@@ -23,8 +23,9 @@ UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class MONOGRINDING_API ADefaultPlayer : public AMonoGrindingCharacter {
     GENERATED_BODY()
 
-protected:
-    bool TryUseMana(int Amount);
+public:
+    void RegenMana(int Amount);
+    bool UseMana(int Amount);
 
     UFUNCTION(BlueprintCallable, Category = "Player")
     void Move(FVector2D MovementVector);
@@ -38,7 +39,8 @@ protected:
     UFUNCTION(BlueprintCallable, Category = "Player")
     bool CreateUnitAtPosition(UUnitTemplate *Template, FVector Position);
 
-    virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
+    virtual void SetupPlayerInputComponent(
+        class UInputComponent *PlayerInputComponent) override;
 
     UPROPERTY(VisibleAnywhere,
               BlueprintReadOnly,
@@ -74,12 +76,6 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "Player|Mana")
     FManaChanged ManaChanged;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player|Mana")
-    int MaxMana;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Mana")
-    int CurrentMana;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally")
     TArray<UAllyComponent *> Allies;
 
@@ -92,11 +88,33 @@ public:
     TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 
 private:
-    void BeginPlay();
+    void BeginPlay() override;
     void Enlist(ADefaultUnitOrchestrator *Unit);
     void SelectUnitTemplate(UUnitTemplate *Template);
+    void SetMana(int Value);
+    void OnSecondPassed();
 
-    UFUNCTION(BlueprintCallable, Category = "Player|Allies", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere,
+              BlueprintReadWrite,
+              Category = "Player|Mana",
+              meta = (AllowPrivateAccess = "true"))
+    int MaxMana = 100;
+
+    UPROPERTY(VisibleAnywhere,
+              BlueprintReadOnly,
+              Category = "Player|Mana",
+              meta = (AllowPrivateAccess = "true"))
+    int CurrentMana = MaxMana;
+
+    UPROPERTY(EditAnywhere,
+              BlueprintReadWrite,
+              Category = "Player|Mana",
+              meta = (AllowPrivateAccess = "true"))
+    int ManaRegenPerSec = 1;
+
+    UFUNCTION(BlueprintCallable,
+              Category = "Player|Allies",
+              meta = (AllowPrivateAccess = "true"))
     bool CreateUnitFromSelectedTemplateAtLocation(FVector Position);
 
     UPROPERTY(VisibleAnywhere,
@@ -104,4 +122,6 @@ private:
               Category = "Player|Allies",
               meta = (AllowPrivateAccess = "true"))
     UUnitTemplate *SelectedUnitTemplate;
+
+    FTimerHandle ManaRegenTimerHandle;
 };
