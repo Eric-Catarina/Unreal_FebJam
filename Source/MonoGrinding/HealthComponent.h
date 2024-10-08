@@ -11,7 +11,9 @@
 #include "HealthComponent.generated.h"
 
 UDELEGATE()
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthChangedPercent, float, NewPercent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthChangedPercent,
+                                            float,
+                                            NewPercent);
 
 UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);

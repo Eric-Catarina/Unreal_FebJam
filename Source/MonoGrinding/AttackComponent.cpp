@@ -15,21 +15,25 @@ void UAttackComponent::BeginPlay() {
     Super::BeginPlay();
 
     GetWorld()->GetTimerManager().SetTimer(TimerHandle_Attack, this,
-                                           &UAttackComponent::PerformAttack, AttackInterval, true);
+                                           &UAttackComponent::PerformAttack,
+                                           AttackInterval, true);
 }
 
-void UAttackComponent::TickComponent(float DeltaTime,
-                                     ELevelTick TickType,
-                                     FActorComponentTickFunction *ThisTickFunction) {
+void UAttackComponent::TickComponent(
+    float DeltaTime,
+    ELevelTick TickType,
+    FActorComponentTickFunction *ThisTickFunction) {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 void UAttackComponent::PerformAttack() {
     TArray<AActor *> FoundActors;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonoGrindingCharacter::StaticClass(),
-                                          FoundActors); // Consider filtering by enemy class
+    UGameplayStatics::GetAllActorsOfClass(
+        GetWorld(), AMonoGrindingCharacter::StaticClass(),
+        FoundActors); // Consider filtering by enemy class
 
-    UHealthComponent *HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
+    UHealthComponent *HealthComponent =
+        GetOwner()->FindComponentByClass<UHealthComponent>();
 
     if (!HealthComponent || HealthComponent->IsDead)
         return;
@@ -46,8 +50,9 @@ void UAttackComponent::PerformAttack() {
             continue;
         }
 
-        float Distance = FVector::Distance(PossibleTargetActor->GetActorLocation(),
-                                           GetOwner()->GetActorLocation());
+        float Distance =
+            FVector::Distance(PossibleTargetActor->GetActorLocation(),
+                              GetOwner()->GetActorLocation());
         if (Distance >= NearestDistance)
             continue;
 
@@ -63,24 +68,28 @@ void UAttackComponent::PerformAttack() {
     if (SlashVFX && SlashVFX2) {
         // Calcula a rotação do VFX para apontar para o alvo
         const FVector Direction =
-            (NearestTarget->GetActorLocation() - GetOwner()->GetActorLocation()).GetSafeNormal();
+            (NearestTarget->GetActorLocation() - GetOwner()->GetActorLocation())
+                .GetSafeNormal();
         const FRotator VFXRotation = Direction.Rotation();
 
         // Spawn do VFX na posição do alvo com a rotação calculada
-        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SlashVFX,
-                                                       GetOwner()->GetActorLocation(), VFXRotation);
         UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-            GetWorld(), SlashVFX2, NearestTarget->GetActorLocation(), VFXRotation);
+            GetWorld(), SlashVFX, GetOwner()->GetActorLocation(), VFXRotation);
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+            GetWorld(), SlashVFX2, NearestTarget->GetActorLocation(),
+            VFXRotation);
     }
 
     if (HitSound) {
-        UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetOwner()->GetActorLocation());
+        UGameplayStatics::PlaySoundAtLocation(this, HitSound,
+                                              GetOwner()->GetActorLocation());
     }
 }
 
 void UAttackComponent::DealDamage(AActor *Target) {
     UE_LOG(LogTemp, Warning, TEXT("%f was dealed from %s to %s"), AttackDamage,
            *GetOwner()->GetName(), *Target->GetName());
-    UGameplayStatics::ApplyDamage(Target, AttackDamage, GetOwner()->GetInstigatorController(),
+    UGameplayStatics::ApplyDamage(Target, AttackDamage,
+                                  GetOwner()->GetInstigatorController(),
                                   GetOwner(), nullptr);
 }

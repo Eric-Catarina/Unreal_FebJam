@@ -53,9 +53,10 @@ public:
     // Time handle for managing attack interval.
     FTimerHandle TimerHandle_Attack;
 
-    virtual void TickComponent(float DeltaTime,
-                               ELevelTick TickType,
-                               FActorComponentTickFunction *ThisTickFunction) override;
+    virtual void
+    TickComponent(float DeltaTime,
+                  ELevelTick TickType,
+                  FActorComponentTickFunction *ThisTickFunction) override;
 
     void PerformAttack();
 

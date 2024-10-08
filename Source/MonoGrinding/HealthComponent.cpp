@@ -19,8 +19,10 @@ UHealthComponent::UHealthComponent() {
 void UHealthComponent::BeginPlay() {
     Super::BeginPlay();
 
-    MovementComponent = GetOwner()->GetComponentByClass<UCharacterMovementComponent>();
-    SkeletalMeshComponent = GetOwner()->GetComponentByClass<USkeletalMeshComponent>();
+    MovementComponent =
+        GetOwner()->GetComponentByClass<UCharacterMovementComponent>();
+    SkeletalMeshComponent =
+        GetOwner()->GetComponentByClass<USkeletalMeshComponent>();
 }
 
 void UHealthComponent::TakeDamage(float DamageAmount) {
@@ -70,10 +72,12 @@ void UHealthComponent::DieInternal() {
         // UAnimInstance *AnimInstance = MeshComp->GetAnimInstance();
         // if (AnimInstance) {
         //         AnimInstance->Montage_Play(TPoseMontage);
-        //     MeshComp->SetAnimationMode(EAnimationMode::AnimationCustomMode); //
+        //     MeshComp->SetAnimationMode(EAnimationMode::AnimationCustomMode);
+        //     //
         // }
 
-        SkeletalMeshComponent->SetAnimationMode(EAnimationMode::AnimationCustomMode); //
+        SkeletalMeshComponent->SetAnimationMode(
+            EAnimationMode::AnimationCustomMode); //
     }
 
     if (MovementComponent) {
@@ -81,7 +85,8 @@ void UHealthComponent::DieInternal() {
     }
 
     if (DeathSound) {
-        UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());
+        UGameplayStatics::PlaySoundAtLocation(this, DeathSound,
+                                              GetOwner()->GetActorLocation());
     }
 }
 
@@ -98,6 +103,7 @@ void UHealthComponent::ReviveInternal() {
     }
 
     if (SkeletalMeshComponent) {
-        SkeletalMeshComponent->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+        SkeletalMeshComponent->SetAnimationMode(
+            EAnimationMode::AnimationBlueprint);
     }
 }

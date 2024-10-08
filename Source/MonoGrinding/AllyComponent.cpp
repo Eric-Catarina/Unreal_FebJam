@@ -14,7 +14,8 @@ void UAllyComponent::BeginPlay() {
     Super::BeginPlay();
     AttackComponent = GetOwner()->FindComponentByClass<UAttackComponent>();
     HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
-    SkeletalMeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
+    SkeletalMeshComponent =
+        GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
 }
 
 void UAllyComponent::Enable() {
@@ -46,13 +47,16 @@ void UAllyComponent::Enlist(AActor *LeaderP) {
 }
 
 void UAllyComponent::MoveTo(const FVector &TargetLocation) {
-    UE_LOG(LogTemp, Warning, TEXT("Trying to move to location %s"), *TargetLocation.ToString());
+    UE_LOG(LogTemp, Warning, TEXT("Trying to move to location %s"),
+           *TargetLocation.ToString());
 
     OwnerCharacter = Cast<ACharacter>(GetOwner());
-    AAIController *OwnerAiController = Cast<AAIController>(OwnerCharacter->GetController());
+    AAIController *OwnerAiController =
+        Cast<AAIController>(OwnerCharacter->GetController());
 
     if (!OwnerAiController) {
-        UE_LOG(LogTemp, Warning, TEXT("AI Controller not properly configured, not moving"));
+        UE_LOG(LogTemp, Warning,
+               TEXT("AI Controller not properly configured, not moving"));
         return;
     }
 

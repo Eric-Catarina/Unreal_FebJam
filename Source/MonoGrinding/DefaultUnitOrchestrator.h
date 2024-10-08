@@ -10,7 +10,8 @@
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
-class MONOGRINDING_API ADefaultUnitOrchestrator : public AMonoGrindingCharacter, public IUnit {
+class MONOGRINDING_API ADefaultUnitOrchestrator : public AMonoGrindingCharacter,
+                                                  public IUnit {
     GENERATED_BODY()
 
 public:

@@ -10,8 +10,9 @@ Summon(UUnitTemplate *Template,
        FVector const &Location,
        FRotator const &Rotation,
        const FActorSpawnParameters &SpawnParameters = FActorSpawnParameters()) {
-    ADefaultUnitOrchestrator *Unit = World->SpawnActor<ADefaultUnitOrchestrator>(
-        Template->Blueprint, Location, Rotation, SpawnParameters);
+    ADefaultUnitOrchestrator *Unit =
+        World->SpawnActor<ADefaultUnitOrchestrator>(
+            Template->Blueprint, Location, Rotation, SpawnParameters);
     Unit->Setup(Template);
 
     return Unit;

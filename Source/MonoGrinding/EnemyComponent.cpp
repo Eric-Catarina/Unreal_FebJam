@@ -20,7 +20,8 @@ void UEnemyComponent::BeginPlay() {
     OwnerCustomCharacter = Cast<AMonoGrindingCharacter>(GetOwner());
     AttackComponent = GetOwner()->FindComponentByClass<UAttackComponent>();
     HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
-    SkeletalMeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
+    SkeletalMeshComponent =
+        GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
 
     APawn *OwnerPawn = Cast<APawn>(GetOwner());
     if (!OwnerPawn)
@@ -33,9 +34,10 @@ void UEnemyComponent::BeginPlay() {
     AiController = Cast<AAIController>(Controller);
 }
 
-void UEnemyComponent::TickComponent(float DeltaTime,
-                                    ELevelTick TickType,
-                                    FActorComponentTickFunction *ThisTickFunction) {
+void UEnemyComponent::TickComponent(
+    float DeltaTime,
+    ELevelTick TickType,
+    FActorComponentTickFunction *ThisTickFunction) {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
     if (!Enabled)
@@ -79,7 +81,8 @@ void UEnemyComponent::StartPursuit() {
     UWorld *World = GetOwner()->GetWorld();
     UE_LOG(LogTemp, Warning, TEXT("World: "), World);
 
-    UGameplayStatics::GetAllActorsOfClass(World, ADefaultPlayer::StaticClass(), FoundPlayers);
+    UGameplayStatics::GetAllActorsOfClass(World, ADefaultPlayer::StaticClass(),
+                                          FoundPlayers);
     int FoundPlayersCount = FoundPlayers.Num();
 
     UE_LOG(LogTemp, Warning, TEXT("Found players: %d"), FoundPlayersCount);

@@ -6,8 +6,10 @@
 #include "NullHelpers.h"
 
 ADefaultUnitOrchestrator::ADefaultUnitOrchestrator() {
-    AllyComponent = CreateDefaultSubobject<UAllyComponent>(TEXT("AllyComponent"));
-    EnemyComponent = CreateDefaultSubobject<UEnemyComponent>(TEXT("EnemyComponent"));
+    AllyComponent =
+        CreateDefaultSubobject<UAllyComponent>(TEXT("AllyComponent"));
+    EnemyComponent =
+        CreateDefaultSubobject<UEnemyComponent>(TEXT("EnemyComponent"));
 }
 
 void ADefaultUnitOrchestrator::BeginPlay() {
