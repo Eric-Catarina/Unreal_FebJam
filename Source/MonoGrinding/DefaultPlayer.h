@@ -26,6 +26,7 @@ class MONOGRINDING_API ADefaultPlayer : public AMonoGrindingCharacter {
 public:
     void RegenMana(int Amount);
     bool UseMana(int Amount);
+    bool CheckHasEnoughMana(int Amount);
 
     UFUNCTION(BlueprintCallable, Category = "Player")
     void Move(FVector2D MovementVector);

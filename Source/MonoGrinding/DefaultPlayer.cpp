@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Misc/AssertionMacros.h"
 #include "MonoGrinding/AllyComponent.h"
 #include "MonoGrinding/DefaultUnitOrchestrator.h"
 #include "MonoGrinding/SummonHelper.h"
@@ -165,9 +166,17 @@ void ADefaultPlayer::RegenMana(int Amount) {
     SetMana(CurrentMana + Amount);
 }
 
-bool ADefaultPlayer::UseMana(int Amount) {
+bool ADefaultPlayer::CheckHasEnoughMana(int Amount) {
     if (Amount > CurrentMana) {
         UE_LOG(LogTemp, Warning, TEXT("Not enough mana"));
+        return false;
+    }
+
+    return true;
+}
+
+bool ADefaultPlayer::UseMana(int Amount) {
+    if (!CheckHasEnoughMana(Amount)) {
         return false;
     }
 
@@ -191,6 +200,7 @@ bool ADefaultPlayer::CreateUnitAtPosition(UUnitTemplate *Template,
                                           FVector Position) {
     MG_LOG_TEMP_WARN_NULL_IF_RETURN_VALUE(GetWorld(), false);
     MG_LOG_TEMP_WARN_NULL_IF_RETURN_VALUE(Template, false);
+    MG_RETURN_VALUE_IF(!CheckHasEnoughMana(Template->ManaCost), false);
     MG_LOG_TEMP_WARN_NULL_IF_RETURN_VALUE(Template->Blueprint, false);
 
     FActorSpawnParameters SpawnParams;
@@ -213,7 +223,8 @@ bool ADefaultPlayer::CreateUnitAtPosition(UUnitTemplate *Template,
 }
 
 void ADefaultPlayer::Enlist(ADefaultUnitOrchestrator *Unit) {
-    MG_RETURN_IF(!Unit || !Unit->SwitchToAlly());
+    MG_RETURN_IF(!Unit || !CheckHasEnoughMana(Unit->GetTemplate()->ManaCost) ||
+                 !Unit->SwitchToAlly());
 
     UAllyComponent *Ally = Unit->AllyComponent;
 
