@@ -40,18 +40,12 @@ ADefaultPlayer::ADefaultPlayer() {
 }
 
 void ADefaultPlayer::Tick(float DeltaTime) {
-    // if (!PlayerController)
-    return;
+    MG_RETURN_IF(!UnitSummonIndicator);
 
     FHitResult HitResult;
-    GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(
-        ECC_Visibility, false, HitResult);
+    MG_RETURN_IF(!CursorRaycast(HitResult));
 
-    FRotator LookAtRotation =
-        (HitResult.Location - GetActorLocation()).Rotation();
-    LookAtRotation.Pitch = 0;
-
-    SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
+    UnitSummonIndicator->SetActorLocation(HitResult.ImpactPoint);
 }
 
 void ADefaultPlayer::BeginPlay() {
@@ -139,19 +133,33 @@ void ADefaultPlayer::MoveAllies() {
     }
 }
 
+void ADefaultPlayer::EnterSummoningMode(UUnitTemplate *UnitTemplate) {
+    MG_RETURN_IF(!CheckHasEnoughMana(UnitTemplate->ManaCost));
+
+    FHitResult HitResult;
+    MG_RETURN_IF(!CursorRaycast(HitResult));
+
+    FActorSpawnParameters SpawnParameters;
+    SpawnParameters.Owner = this;
+    SpawnParameters.Instigator = GetInstigator();
+    SpawnParameters.SpawnCollisionHandlingOverride =
+        ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+    FVector Location = HitResult.ImpactPoint;
+    FRotator Rotation = FRotator::ZeroRotator;
+
+    UnitSummonIndicator = GetWorld()->SpawnActor<AActor>(
+        UnitSummonIndicatorBlueprint, Location, Rotation, SpawnParameters);
+}
+
 void ADefaultPlayer::SummonOrEnlistUnit() {
     UE_LOG(LogTemp, Warning, TEXT("Clicked Summon Ally"));
 
     FHitResult HitResult;
-    GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(
-        ObjectTypes, false, HitResult);
-    FVector TargetLocation = HitResult.ImpactPoint;
-
-    MG_RETURN_IF(!HitResult.bBlockingHit);
+    MG_RETURN_IF(!CursorRaycast(HitResult));
 
     AActor *HitActor = HitResult.GetActor();
-
-    MG_RETURN_IF(!HitActor);
+    FVector TargetLocation = HitResult.ImpactPoint;
 
     ADefaultUnitOrchestrator *HitUnit =
         Cast<ADefaultUnitOrchestrator>(HitActor);
@@ -241,4 +249,11 @@ void ADefaultPlayer::SelectUnitTemplate(UUnitTemplate *Template) {
 
 void ADefaultPlayer::OnSecondPassed() {
     RegenMana(ManaRegenPerSec);
+}
+
+bool ADefaultPlayer::CursorRaycast(FHitResult &HitResult) {
+    GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursorForObjects(
+        ObjectTypes, false, HitResult);
+
+    return HitResult.bBlockingHit;
 }

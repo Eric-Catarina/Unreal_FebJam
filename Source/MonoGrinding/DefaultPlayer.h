@@ -66,6 +66,9 @@ public:
 
     void Tick(float DeltaTime) override;
 
+    UFUNCTION(BlueprintCallable, Category = "Player|Allies")
+    void EnterSummoningMode(UUnitTemplate *UnitTemplate);
+
     FORCEINLINE class USpringArmComponent *GetCameraBoom() const {
         return CameraBoom;
     }
@@ -94,6 +97,7 @@ private:
     void SelectUnitTemplate(UUnitTemplate *Template);
     void SetMana(int Value);
     void OnSecondPassed();
+    bool CursorRaycast(FHitResult &HitResult);
 
     UPROPERTY(EditAnywhere,
               BlueprintReadWrite,
@@ -124,5 +128,12 @@ private:
               meta = (AllowPrivateAccess = "true"))
     UUnitTemplate *SelectedUnitTemplate;
 
+    UPROPERTY(EditAnywhere,
+              BlueprintReadWrite,
+              Category = "Player|Allies",
+              meta = (AllowPrivateAccess = "true"))
+    TSubclassOf<AActor> UnitSummonIndicatorBlueprint;
+
+    AActor *UnitSummonIndicator;
     FTimerHandle ManaRegenTimerHandle;
 };
