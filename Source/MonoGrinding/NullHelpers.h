@@ -29,6 +29,11 @@
         return ReturnValue;                        \
     }
 
+#define MG_CONTINUE_IF(Condition) \
+    if (Condition) {              \
+        continue;                 \
+    }
+
 #define MG_DEFAULT_LOG(Message) UE_LOG(CategoryName, Verbosity, TEXT(Message));
 
 #define MG_DEFAULT_LOG_RETURN_IF(Condition, Message) \

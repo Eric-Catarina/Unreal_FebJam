@@ -13,7 +13,10 @@ Summon(UUnitTemplate *Template,
     ADefaultUnitOrchestrator *Unit =
         World->SpawnActor<ADefaultUnitOrchestrator>(
             Template->Blueprint, Location, Rotation, SpawnParameters);
-    Unit->Setup(Template);
+
+    if (Unit) {
+        Unit->Setup(Template);
+    }
 
     return Unit;
 }

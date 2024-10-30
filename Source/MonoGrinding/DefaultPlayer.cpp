@@ -3,6 +3,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "EnemyComponent.h"
+#include "Engine/EngineTypes.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -40,6 +41,8 @@ ADefaultPlayer::ADefaultPlayer() {
 }
 
 void ADefaultPlayer::Tick(float DeltaTime) {
+    Super::Tick(DeltaTime);
+
     MG_RETURN_IF(!UnitSummonIndicator);
 
     FHitResult HitResult;
@@ -63,10 +66,6 @@ void ADefaultPlayer::BeginPlay() {
         PlayerController->bShowMouseCursor = true;
         PlayerController->bEnableClickEvents = true;
         PlayerController->bEnableMouseOverEvents = true;
-    }
-
-    if (UnitTemplates.Num() > 0 && UnitTemplates[0]) {
-        SelectUnitTemplate(UnitTemplates[0]);
     }
 
     GetWorldTimerManager().SetTimer(ManaRegenTimerHandle, this,
@@ -112,25 +111,34 @@ void ADefaultPlayer::Move(FVector2D MovementVector) {
     AddMovementInput(RightDirection, MovementVector.X);
 }
 
-void ADefaultPlayer::MoveAllies() {
+EMoveAlliesResultType ADefaultPlayer::MoveAllies() {
+    DestroyUnitSummonIndicator();
+    ClearSelectedUnitTemplate();
+
     FHitResult HitResult;
     GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(
-        ECC_Visibility, false, HitResult);
+        ECollisionChannel::ECC_Visibility, false, HitResult);
     FVector TargetLocation = HitResult.Location;
-    UE_LOG(LogTemp, Warning, TEXT("Trying to Move Allies to %s"),
-           *TargetLocation.ToString());
 
-    if (!HitResult.bBlockingHit)
-        return;
-
-    UE_LOG(LogTemp, Warning, TEXT("Valid TargetLocation, Moving Allies"));
+    MG_RETURN_VALUE_IF(!HitResult.bBlockingHit, EMoveAlliesResultType::NoHit);
 
     for (auto &Ally : Allies) {
-        if (!Ally)
-            continue;
+        MG_CONTINUE_IF(!Ally);
 
         Ally->MoveTo(TargetLocation);
     }
+
+    return EMoveAlliesResultType::Success;
+}
+
+void ADefaultPlayer::DestroyUnitSummonIndicator() {
+    if (UnitSummonIndicator) {
+        UnitSummonIndicator->Destroy();
+    }
+}
+
+void ADefaultPlayer::ClearSelectedUnitTemplate() {
+    SelectUnitTemplate(nullptr);
 }
 
 void ADefaultPlayer::EnterSummoningMode(UUnitTemplate *UnitTemplate) {
@@ -150,6 +158,8 @@ void ADefaultPlayer::EnterSummoningMode(UUnitTemplate *UnitTemplate) {
 
     UnitSummonIndicator = GetWorld()->SpawnActor<AActor>(
         UnitSummonIndicatorBlueprint, Location, Rotation, SpawnParameters);
+
+    SelectUnitTemplate(UnitTemplate);
 }
 
 void ADefaultPlayer::SummonOrEnlistUnit() {
@@ -165,7 +175,7 @@ void ADefaultPlayer::SummonOrEnlistUnit() {
         Cast<ADefaultUnitOrchestrator>(HitActor);
     if (HitUnit) {
         Enlist(HitUnit);
-    } else {
+    } else if (SelectedUnitTemplate) {
         CreateUnitFromSelectedTemplateAtLocation(TargetLocation);
     }
 }

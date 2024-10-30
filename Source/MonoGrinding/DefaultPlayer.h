@@ -18,6 +18,12 @@
 UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChanged, int, NewValue);
 
+UENUM(BlueprintType)
+enum class EMoveAlliesResultType : uint8 {
+    NoHit UMETA(DisplayName = "NoHit"),
+    Success UMETA(DisplayName = "Success"),
+};
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 
 class MONOGRINDING_API ADefaultPlayer : public AMonoGrindingCharacter {
@@ -32,7 +38,7 @@ public:
     void Move(FVector2D MovementVector);
 
     UFUNCTION(BlueprintCallable, Category = "Player")
-    void MoveAllies();
+    EMoveAlliesResultType MoveAllies();
 
     UFUNCTION(BlueprintCallable, Category = "Player")
     void SummonOrEnlistUnit();
@@ -93,6 +99,22 @@ public:
 
 private:
     void BeginPlay() override;
+
+    UFUNCTION(BlueprintCallable,
+              Category = "Player|Allies",
+              meta = (AllowPrivateAccess))
+    bool CreateUnitFromSelectedTemplateAtLocation(FVector Position);
+
+    UFUNCTION(BlueprintCallable,
+              Category = "Player|Allies",
+              meta = (AllowPrivateAccess))
+    void DestroyUnitSummonIndicator();
+
+    UFUNCTION(BlueprintCallable,
+              Category = "Player|Allies",
+              meta = (AllowPrivateAccess))
+    void ClearSelectedUnitTemplate();
+
     void Enlist(ADefaultUnitOrchestrator *Unit);
     void SelectUnitTemplate(UUnitTemplate *Template);
     void SetMana(int Value);
@@ -116,11 +138,6 @@ private:
               Category = "Player|Mana",
               meta = (AllowPrivateAccess = "true"))
     int ManaRegenPerSec = 1;
-
-    UFUNCTION(BlueprintCallable,
-              Category = "Player|Allies",
-              meta = (AllowPrivateAccess = "true"))
-    bool CreateUnitFromSelectedTemplateAtLocation(FVector Position);
 
     UPROPERTY(VisibleAnywhere,
               BlueprintReadOnly,
