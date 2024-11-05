@@ -20,6 +20,9 @@ void ADefaultUnitOrchestrator::Setup(UUnitTemplate *PTemplate) {
     MG_RETURN_IF(Template != nullptr);
 
     Template = PTemplate;
+    if (AllyComponent) {
+        AllyComponent->Setup(Template);
+    }
 }
 
 const UUnitTemplate *ADefaultUnitOrchestrator::GetTemplate() const {

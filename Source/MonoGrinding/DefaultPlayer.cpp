@@ -142,7 +142,8 @@ void ADefaultPlayer::ClearSelectedUnitTemplate() {
 }
 
 void ADefaultPlayer::EnterSummoningMode(UUnitTemplate *UnitTemplate) {
-    MG_RETURN_IF(!CheckHasEnoughMana(UnitTemplate->ManaCost));
+    MG_RETURN_IF(!UnitTemplate || SelectedUnitTemplate == UnitTemplate ||
+                 !CheckHasEnoughMana(UnitTemplate->ManaCost));
 
     FHitResult HitResult;
     MG_RETURN_IF(!CursorRaycast(HitResult));
@@ -250,11 +251,14 @@ void ADefaultPlayer::Enlist(ADefaultUnitOrchestrator *Unit) {
 
     Ally->Enlist(this);
     Allies.Add(Ally);
+    AlliesChanged.Broadcast();
+
     UseMana(Unit->GetTemplate()->ManaCost);
 }
 
 void ADefaultPlayer::SelectUnitTemplate(UUnitTemplate *Template) {
     SelectedUnitTemplate = Template;
+    SelectedUnitTemplateChanged.Broadcast(SelectedUnitTemplate);
 }
 
 void ADefaultPlayer::OnSecondPassed() {

@@ -1,11 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "AllyComponent.h"
 #include "AIController.h"
 #include "AttackComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/Character.h"
 #include "MonoGrinding/MonoGrindingCharacter.h"
+#include "MonoGrinding/NullHelpers.h"
 
 UAllyComponent::UAllyComponent() {
 }
@@ -16,6 +15,12 @@ void UAllyComponent::BeginPlay() {
     HealthComponent = GetOwner()->FindComponentByClass<UHealthComponent>();
     SkeletalMeshComponent =
         GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
+}
+
+void UAllyComponent::Setup(UUnitTemplate *PTemplate) {
+    MG_RETURN_IF(Template != nullptr);
+
+    Template = PTemplate;
 }
 
 void UAllyComponent::Enable() {

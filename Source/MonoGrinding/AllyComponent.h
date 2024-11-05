@@ -8,6 +8,7 @@
 #include "CoreMinimal.h"
 #include "Materials/MaterialInstance.h"
 #include "MonoGrinding/HealthComponent.h"
+#include "MonoGrinding/UnitTemplate.h"
 #include "AllyComponent.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -17,6 +18,8 @@ class MONOGRINDING_API UAllyComponent : public UActorComponent {
 
 public:
     UAllyComponent();
+
+    void Setup(UUnitTemplate *PTemplate);
 
     UFUNCTION(BlueprintCallable, Category = "Ally")
     void Enable();
@@ -51,9 +54,15 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally|Debug")
     bool Enabled;
 
-protected:
+private:
     virtual void BeginPlay() override;
 
     UFUNCTION(BlueprintCallable, Category = "Ally")
     void OnDeath();
+
+    UPROPERTY(VisibleAnywhere,
+              BlueprintReadOnly,
+              Category = "Ally",
+              meta = (AllowPrivateAccess))
+    UUnitTemplate *Template;
 };

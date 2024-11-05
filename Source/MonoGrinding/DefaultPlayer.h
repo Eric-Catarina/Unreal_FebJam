@@ -18,6 +18,14 @@
 UDELEGATE()
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FManaChanged, int, NewValue);
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSelectedUnitTemplateChanged,
+                                            UUnitTemplate *,
+                                            NewValue);
+
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAlliesChanged);
+
 UENUM(BlueprintType)
 enum class EMoveAlliesResultType : uint8 {
     NoHit UMETA(DisplayName = "NoHit"),
@@ -120,6 +128,16 @@ private:
     void SetMana(int Value);
     void OnSecondPassed();
     bool CursorRaycast(FHitResult &HitResult);
+
+    UPROPERTY(BlueprintAssignable,
+              Category = "Player|Allies",
+              meta = (AllowPrivateAccess))
+    FAlliesChanged AlliesChanged;
+
+    UPROPERTY(BlueprintAssignable,
+              Category = "Player|Allies",
+              meta = (AllowPrivateAccess))
+    FSelectedUnitTemplateChanged SelectedUnitTemplateChanged;
 
     UPROPERTY(EditAnywhere,
               BlueprintReadWrite,
