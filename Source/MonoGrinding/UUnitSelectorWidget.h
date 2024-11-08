@@ -10,6 +10,12 @@
 #include "Math/MathFwd.h"
 #include "UUnitSelectorWidget.generated.h"
 
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSelectionStarted);
+
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSelectionCompleted);
+
 UCLASS()
 
 class MONOGRINDING_API UUnitSelectorWidget : public UUserWidget {
@@ -51,6 +57,16 @@ private:
               Category = "Unit Selector",
               meta = (AllowPrivateAccess))
     TArray<ADefaultUnitOrchestrator *> SelectedUnits;
+
+    UPROPERTY(BlueprintAssignable,
+              Category = "Unit Selector",
+              meta = (AllowPrivateAccess))
+    FSelectionStarted SelectionStarted;
+
+    UPROPERTY(BlueprintAssignable,
+              Category = "Unit Selector",
+              meta = (AllowPrivateAccess))
+    FSelectionCompleted SelectionCompleted;
 
     bool GetMousePosition(float &X, float &Y);
     AHUD *Hud;

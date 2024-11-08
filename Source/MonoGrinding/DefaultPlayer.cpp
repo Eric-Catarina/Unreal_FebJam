@@ -115,6 +115,9 @@ EMoveAlliesResultType ADefaultPlayer::MoveAllies() {
     DestroyUnitSummonIndicator();
     ClearSelectedUnitTemplate();
 
+    MG_RETURN_VALUE_IF(SelectedAllies.Num() == 0,
+                       EMoveAlliesResultType::NoAlliesSelected);
+
     FHitResult HitResult;
     GetWorld()->GetFirstPlayerController()->GetHitResultUnderCursor(
         ECollisionChannel::ECC_Visibility, false, HitResult);
@@ -122,7 +125,7 @@ EMoveAlliesResultType ADefaultPlayer::MoveAllies() {
 
     MG_RETURN_VALUE_IF(!HitResult.bBlockingHit, EMoveAlliesResultType::NoHit);
 
-    for (auto &Ally : Allies) {
+    for (auto &Ally : SelectedAllies) {
         MG_CONTINUE_IF(!Ally);
 
         Ally->MoveTo(TargetLocation);
@@ -270,4 +273,17 @@ bool ADefaultPlayer::CursorRaycast(FHitResult &HitResult) {
         ObjectTypes, false, HitResult);
 
     return HitResult.bBlockingHit;
+}
+
+void ADefaultPlayer::SelectAllies(
+    const TArray<ADefaultUnitOrchestrator *> &Value) {
+    SelectedAllies.Empty();
+
+    for (auto Ally : Value) {
+        MG_CONTINUE_IF(!Ally);
+
+        UAllyComponent *AllyComponent =
+            Ally->GetComponentByClass<UAllyComponent>();
+        SelectedAllies.Add(AllyComponent);
+    }
 }

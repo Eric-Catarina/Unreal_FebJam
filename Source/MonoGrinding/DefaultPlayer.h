@@ -28,7 +28,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAlliesChanged);
 
 UENUM(BlueprintType)
 enum class EMoveAlliesResultType : uint8 {
-    NoHit UMETA(DisplayName = "NoHit"),
+    NoHit UMETA(DisplayName = "No Hit"),
+    NoAlliesSelected UMETA(DisplayName = "No Allies Selected"),
     Success UMETA(DisplayName = "Success"),
 };
 
@@ -97,6 +98,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally")
     TArray<UAllyComponent *> Allies;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ally")
+    TArray<UAllyComponent *> SelectedAllies;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player|Debug")
     APlayerController *PlayerController;
 
@@ -122,6 +126,11 @@ private:
               Category = "Player|Allies",
               meta = (AllowPrivateAccess))
     void ClearSelectedUnitTemplate();
+
+    UFUNCTION(BlueprintCallable,
+              Category = "Player|Allies",
+              meta = (AllowPrivateAccess))
+    void SelectAllies(const TArray<ADefaultUnitOrchestrator *> &Value);
 
     void Enlist(ADefaultUnitOrchestrator *Unit);
     void SelectUnitTemplate(UUnitTemplate *Template);

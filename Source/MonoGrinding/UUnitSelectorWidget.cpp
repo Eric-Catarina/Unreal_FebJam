@@ -37,14 +37,25 @@ void UUnitSelectorWidget::OnReceiveDrawHud(int SizeX, int SizeY) {
         Unit->Select();
     }
 
+    TArray<ADefaultUnitOrchestrator *> SelectedUnitsToRemove;
     for (auto Unit : SelectedUnits) {
         MG_CONTINUE_IF(UnitsInSelectionRect.Contains(Unit));
         Unit->Deselect();
+        SelectedUnitsToRemove.Add(Unit);
+    }
+
+    for (auto Unit : SelectedUnitsToRemove) {
+        SelectedUnits.Remove(Unit);
     }
 }
 
 void UUnitSelectorWidget::SetSelectionState(bool Value) {
     IsSelecting = Value;
+    if (IsSelecting) {
+        SelectionStarted.Broadcast();
+    } else {
+        SelectionCompleted.Broadcast();
+    }
 
     float MousePositionX, MousePositionY;
     MG_RETURN_IF(!IsSelecting ||
