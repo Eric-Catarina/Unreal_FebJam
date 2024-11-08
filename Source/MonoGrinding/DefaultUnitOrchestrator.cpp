@@ -62,3 +62,15 @@ bool ADefaultUnitOrchestrator::SwitchToEnemy() {
     Team = ETeamType::Enemy;
     return true;
 }
+
+void ADefaultUnitOrchestrator::Select() {
+    MG_RETURN_IF(IsSelected);
+    IsSelected = true;
+    OnSelected.Broadcast();
+}
+
+void ADefaultUnitOrchestrator::Deselect() {
+    MG_RETURN_IF(!IsSelected);
+    IsSelected = false;
+    OnDeselected.Broadcast();
+}
