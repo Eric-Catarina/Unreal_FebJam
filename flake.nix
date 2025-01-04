@@ -41,7 +41,7 @@
 
         pwd = builtins.getEnv "PWD";
         projectName = "MonoGrinding";
-        unrealPath = "/mnt/storage/unreal_editors/ue5.4.1";
+        unrealPath = "5.4.1";
         projectPath = "${pwd}/${projectName}.uproject";
       in {
         default = devenv.lib.mkShell {
@@ -54,7 +54,7 @@
               ];
               scripts = {
                 de-openue.exec = ''
-                  nvidia-offload openue ${unrealPath} ${projectPath}
+                  openue ${unrealPath} ${projectPath}
                 '';
 
                 de-uegen.exec = ''

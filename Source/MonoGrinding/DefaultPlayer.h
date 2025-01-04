@@ -179,5 +179,5 @@ private:
     TSubclassOf<AActor> UnitSummonIndicatorBlueprint;
 
     AActor *UnitSummonIndicator;
-    FTimerHandle ManaRegenTimerHandle;
+    FTimerHandle OnManaRegenTimerHandle;
 };

@@ -59,14 +59,14 @@ void ADefaultPlayer::BeginPlay() {
         return;
     }
 
-    if (UEnhancedInputLocalPlayerSubsystem *Subsystem =
-            ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
-                PlayerController->GetLocalPlayer())) {
-        Subsystem->AddMappingContext(DefaultMappingContext, 0);
-        PlayerController->bShowMouseCursor = true;
-        PlayerController->bEnableClickEvents = true;
-        PlayerController->bEnableMouseOverEvents = true;
-    }
+    // if (UEnhancedInputLocalPlayerSubsystem *Subsystem =
+    //         ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+    //             PlayerController->GetLocalPlayer())) {
+    //     Subsystem->AddMappingContext(DefaultMappingContext, 0);
+    //     PlayerController->bShowMouseCursor = true;
+    //     PlayerController->bEnableClickEvents = true;
+    //     PlayerController->bEnableMouseOverEvents = true;
+    // }
 
     GetWorldTimerManager().SetTimer(ManaRegenTimerHandle, this,
                                     &ADefaultPlayer::OnSecondPassed, 1, true);
